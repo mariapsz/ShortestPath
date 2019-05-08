@@ -75,15 +75,14 @@ class Map extends React.Component {
                                 });
                         },
                     }),
-                }).addTo(this.map);
-
-                routeControl.on('routesfound', function (e) {
+                }).on('routesfound', function (e) {
                     let routes = e.routes;
                     let summary = routes[0].summary;
                     if (matrix[connPlaceIdx][j] === 0)
                         matrix[j][connPlaceIdx] = summary.totalDistance / 1000;
                     else matrix[j][connPlaceIdx] = matrix[connPlaceIdx][j];
-                });
+                }).addTo(this.map);
+
 
             }
         }
