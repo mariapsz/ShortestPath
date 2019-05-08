@@ -2,3 +2,14 @@
 .leaflet-top.leaflet-right {
     visibility: hidden;
 }
+
+.leaflet-marker-icon.leaflet-div-icon.leaflet-zoom-animated.leaflet-interactive.leaflet-marker-draggable{
+    width: 3vh;
+    height: 1vh;
+}
+
+#map {
+    width: 90vh;
+    height: 80vh;
+}
+

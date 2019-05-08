@@ -2,12 +2,8 @@ import React from "react";
 import L from "leaflet";
 import "leaflet-routing-machine"
 import "leaflet.icon.glyph"
+import "./map.css"
 
-
-const style = {
-    width: "100vh",
-    height: "90vh",
-};
 
 class Place {
     constructor(name, latLng, connections) {
@@ -19,7 +15,7 @@ class Place {
 
 const places = [
     new Place('Szczecin', L.latLng(53.444738, 14.524450), ['Gorzów Wielkopolski', 'Gdańsk', 'Bydgoszcz', 'Poznań']),
-    new Place('Poznań', L.latLng(52.410637, 16.918623), [ 'Szczecin', 'Gorzów Wielkopolski', 'Wrocław', 'Bydgoszcz','Gdańsk' ,'Łódź', 'Opole']),
+    new Place('Poznań', L.latLng(52.410637, 16.918623), ['Szczecin', 'Gorzów Wielkopolski', 'Wrocław', 'Bydgoszcz', 'Gdańsk', 'Łódź', 'Opole']),
     new Place('Olsztyn', L.latLng(53.773239, 20.476377), ['Gdańsk', 'Białystok', 'Warszawa', 'Bydgoszcz']),
     new Place('Kielce', L.latLng(50.864746, 20.628129), ['Warszawa', 'Lublin', 'Kraków', 'Łódź', 'Rzeszów', 'Katowice']),
     new Place('Katowice', L.latLng(50.254167, 19.020610), ['Kraków', 'Opole', 'Kielce', 'Łódź']),
@@ -31,7 +27,7 @@ const places = [
     new Place('Kraków', L.latLng(50.062435, 19.959979), ['Katowice', 'Rzeszów', 'Kielce']),
     new Place('Łódź', L.latLng(51.763257, 19.507721), ['Warszawa', 'Kielce', 'Opole', 'Katowice', 'Wrocław', 'Poznań', 'Bydgoszcz']),
     new Place('Gorzów Wielkopolski', L.latLng(52.733179, 15.241680), ['Szczecin', 'Poznań', 'Wrocław']),
-    new Place('Lublin', L.latLng(51.234893, 22.570755), ['Łódź', 'Warszawa', 'Białystok' ,'Rzeszów', 'Kielce']),
+    new Place('Lublin', L.latLng(51.234893, 22.570755), ['Łódź', 'Warszawa', 'Białystok', 'Rzeszów', 'Kielce']),
     new Place('Bydgoszcz', L.latLng(53.121995, 18.018519), ['Warszawa', 'Białystok', 'Olsztyn', 'Gdańsk', 'Szczecin', 'Poznań', 'Łódź']),
     new Place('Wrocław', L.latLng(51.107865, 17.029611), ['Gorzów Wielkopolski', 'Poznań', 'Łódź', 'Opole']),
 ];
@@ -39,7 +35,7 @@ const places = [
 
 class Map extends React.Component {
 
-    createAdjacencyMatrix(callback) {
+    createAdjacencyMatrix() {
         let matrix = [];
         let rows = places.length;
         let columns = places.length;
@@ -56,49 +52,39 @@ class Map extends React.Component {
         }
 
         for (let j = 0; j < places.length; j++) {
-            console.log('start: ' + j);
+            let htmlText = '<div class="iconWrapper">cityName</div>'.replace('cityName', places[j].name);
+            let greenIcon = L.divIcon({
+                html: htmlText,
+            });
             for (let k = 0; k < places[j].connections.length; k++) {
-                //console.log('k: ' + k);
                 let connPlaceIdx = Map.getPlaceIndex(places[j].connections[k], places);
-                console.log('connPlaceIdx: ' + connPlaceIdx);
-                if (matrix[connPlaceIdx][j] !== 0) {
-                    console.log('czemu tu nigdy nie wchodzi? ;/');
-                    matrix[j][connPlaceIdx] = matrix[connPlaceIdx][j];
-                } else {
-                  //  console.log(matrix);
-                 //   console.log('connPlaceIdx: ' + connPlaceIdx + ' j: ' + j);
-                  //  console.log(matrix[connPlaceIdx][j]);
-                    let waypoints = [
-                        places[j].latLng,
-                        places[connPlaceIdx].latLng,
-                    ];
-                    callback();
-                    let routeControl = L.Routing.control({
-                        plan: L.Routing.plan(waypoints, {
-                            createMarker: function (i, wp) {
+
+                let waypoints = [
+                    places[j].latLng,
+                    places[connPlaceIdx].latLng,
+                ];
+
+
+                let routeControl = L.Routing.control({
+                    plan: L.Routing.plan(waypoints, {
+                        createMarker: function (i, wp) {
+                            if (k === 0)
                                 return L.marker(wp.latLng, {
                                     draggable: true,
-                                    icon: L.icon({
-                                        iconUrl: 'dot.png',
-                                        shadowUrl: 'dot.png',
-                                    }),
+                                    icon: greenIcon,
                                 });
-                            },
-                        }),
-                    }).addTo(this.map);
-                    callback();
+                        },
+                    }),
+                }).addTo(this.map);
 
-                    routeControl.on('routesfound', function (e) {
-                        let routes = e.routes;
-                        let summary = routes[0].summary;
-                        //console.log(summary.totalDistance / 1000);
-                        //console.log('middle: ' + j);
+                routeControl.on('routesfound', function (e) {
+                    let routes = e.routes;
+                    let summary = routes[0].summary;
+                    if (matrix[connPlaceIdx][j] === 0)
                         matrix[j][connPlaceIdx] = summary.totalDistance / 1000;
-                        //console.log(matrix);
-                        //total time is ' + Math.round(summary.totalTime % 3600 / 60) + ' minutes');
-                    });
-                    callback();
-                }
+                    else matrix[j][connPlaceIdx] = matrix[connPlaceIdx][j];
+                });
+
             }
         }
         return matrix;
@@ -124,17 +110,14 @@ class Map extends React.Component {
             ],
         });
 
-        // add layer
         this.layer = L.layerGroup().addTo(this.map);
 
-        console.log(this.createAdjacencyMatrix(function () {
-            console.log('funkcja callback');
-        }));
+        console.log(this.createAdjacencyMatrix());
     }
 
 
     render() {
-        return <div id="map" style={style}/>;
+        return <div id="map"/>;
     }
 }
 
