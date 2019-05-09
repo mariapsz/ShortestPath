@@ -65,7 +65,7 @@ class Map extends React.Component {
                 ];
 
 
-                let routeControl = L.Routing.control({
+                 L.Routing.control({
                     plan: L.Routing.plan(waypoints, {
                         createMarker: function (i, wp) {
                             if (k === 0)
