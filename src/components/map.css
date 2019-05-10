@@ -10,6 +10,10 @@
 
 #map {
     width: 90vh;
-    height: 80vh;
+    height: 90vh;
 }
 
+#tempMap {
+    width: 90vh;
+    height: 90vh;
+}

@@ -35,72 +35,25 @@ const places = [
 
 class Map extends React.Component {
 
-    createAdjacencyMatrix() {
-        let matrix = [];
-        let rows = places.length;
-        let columns = places.length;
+    map;
+    tempMap;
 
-        fill2DimensionsArray(matrix, rows, columns);
-
-        function fill2DimensionsArray(arr, rows, columns) {
-            for (let i = 0; i < rows; i++) {
-                matrix.push([0]);
-                for (let j = 0; j < columns; j++) {
-                    matrix[i][j] = 0;
-                }
-            }
-        }
-
-        for (let j = 0; j < places.length; j++) {
-            let htmlText = '<div class="iconWrapper">cityName</div>'.replace('cityName', places[j].name);
-            let greenIcon = L.divIcon({
-                html: htmlText,
-            });
-            for (let k = 0; k < places[j].connections.length; k++) {
-                let connPlaceIdx = Map.getPlaceIndex(places[j].connections[k], places);
-
-                let waypoints = [
-                    places[j].latLng,
-                    places[connPlaceIdx].latLng,
-                ];
-
-
-                 L.Routing.control({
-                    plan: L.Routing.plan(waypoints, {
-                        createMarker: function (i, wp) {
-                            if (k === 0)
-                                return L.marker(wp.latLng, {
-                                    draggable: true,
-                                    icon: greenIcon,
-                                });
-                        },
-                    }),
-                }).on('routesfound', function (e) {
-                    let routes = e.routes;
-                    let summary = routes[0].summary;
-                    if (matrix[connPlaceIdx][j] === 0)
-                        matrix[j][connPlaceIdx] = summary.totalDistance / 1000;
-                    else matrix[j][connPlaceIdx] = matrix[connPlaceIdx][j];
-                }).addTo(this.map);
-
-
-            }
-        }
-        return matrix;
+    LatLangToArray(latLang) {
+        return [latLang.lng, latLang.lat];
     }
 
-    static getPlaceIndex(name, array) {
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].name === name)
-                return i;
+    ArrayOfLatLAngToArrayOfNumbers(LatLangArray) {
+        let LatLangAsNumbers = [];
+        for (let i = 0; i < LatLangArray.length; i++) {
+            LatLangAsNumbers[i] = this.LatLangToArray(LatLangArray[i]);
         }
-        return -1;
+        return LatLangAsNumbers;
     }
 
     componentDidMount() {
-        // create map
+
         this.map = L.map("map", {
-            center: [51.55, 19.08],
+            center: [52.227932, 21.012843],
             zoom: 6,
             layers: [
                 L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
@@ -109,15 +62,47 @@ class Map extends React.Component {
             ],
         });
 
-        this.layer = L.layerGroup().addTo(this.map);
+        L.layerGroup().addTo(this.map);
 
-        console.log(this.createAdjacencyMatrix());
+        console.log('Array: ', this.LatLangToArray(L.latLng(53.444738, 14.524450)));
+        console.log(L.latLng(53.444738, 14.524450));
+
+
+        this.tempMap = L.map("tempMap", {
+            center: [51.55, 19.08],
+            zoom: 6,
+            layers: [
+                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
+                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                })
+            ],
+        });
+        L.layerGroup().addTo(this.tempMap);
+        let waypoints = [places[0], places[1]];
+        let control = L.routing.control({waypoints});
+        control.addTo(this.map);
+        control.on('routeselected', (e) => {
+
+            setTimeout(() => {
+                console.log('start adding: ');
+                let myLines = [{
+                    "type": "LineString",
+                    "coordinates": this.ArrayOfLatLAngToArrayOfNumbers(e.route.coordinates),
+                }];
+                console.log('myLines: ' + myLines);
+                L.geoJSON(myLines).addTo(this.tempMap);
+            }, 5000);
+        });
     }
 
 
     render() {
-        return <div id="map"/>;
+        return <div>
+            <div id="map"/>
+            <div id="tempMap"/>
+        </div>;
     }
 }
+
 
 export default Map;
