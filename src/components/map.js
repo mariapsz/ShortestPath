@@ -4,79 +4,133 @@ import "leaflet-routing-machine";
 import "leaflet.icon.glyph";
 import "./map.css";
 
-const fs = require('fs');
 
 class Place {
-    constructor(name, latLng, connections) {
+    name;
+    latLng;
+    targetPlaces;
+
+    constructor(name, latLng, targetPlaces) {
         this.name = name;
         this.latLng = latLng;
-        this.connections = connections;
+        this.targetPlaces = targetPlaces;
     }
 }
 
-const places = [
-    new Place('Szczecin', L.latLng(53.444738, 14.524450), ['Gorzów Wielkopolski', 'Gdańsk', 'Bydgoszcz', 'Poznań']),
-    new Place('Poznań', L.latLng(52.410637, 16.918623), ['Szczecin', 'Gorzów Wielkopolski', 'Wrocław', 'Bydgoszcz', 'Gdańsk', 'Łódź', 'Opole']),
-    new Place('Olsztyn', L.latLng(53.773239, 20.476377), ['Gdańsk', 'Białystok', 'Warszawa', 'Bydgoszcz']),
-    new Place('Kielce', L.latLng(50.864746, 20.628129), ['Warszawa', 'Lublin', 'Kraków', 'Łódź', 'Rzeszów', 'Katowice']),
-    new Place('Katowice', L.latLng(50.254167, 19.020610), ['Kraków', 'Opole', 'Kielce', 'Łódź']),
-    new Place('Gdańsk', L.latLng(54.379539, 18.622404), ['Szczecin', 'Poznań', 'Bydgoszcz', 'Olsztyn']),
-    new Place('Białystok', L.latLng(53.133148, 23.167585), ['Lublin', 'Warszawa', 'Bydgoszcz', 'Olsztyn']),
-    new Place('Rzeszów', L.latLng(50.031183, 22.003103), ['Kraków', 'Lublin', 'Kielce']),
-    new Place('Opole', L.latLng(50.670958, 17.925569), ['Wrocław', 'Poznań', 'Kraków', 'Łódź']),
-    new Place('Warszawa', L.latLng(52.227932, 21.012843), ['Łódź', 'Białystok', 'Kielce', 'Bydgoszcz', 'Lublin', 'Olsztyn']),
-    new Place('Kraków', L.latLng(50.062435, 19.959979), ['Katowice', 'Rzeszów', 'Kielce']),
-    new Place('Łódź', L.latLng(51.763257, 19.507721), ['Warszawa', 'Kielce', 'Opole', 'Katowice', 'Wrocław', 'Poznań', 'Bydgoszcz']),
-    new Place('Gorzów Wielkopolski', L.latLng(52.733179, 15.241680), ['Szczecin', 'Poznań', 'Wrocław']),
-    new Place('Lublin', L.latLng(51.234893, 22.570755), ['Łódź', 'Warszawa', 'Białystok', 'Rzeszów', 'Kielce']),
-    new Place('Bydgoszcz', L.latLng(53.121995, 18.018519), ['Warszawa', 'Białystok', 'Olsztyn', 'Gdańsk', 'Szczecin', 'Poznań', 'Łódź']),
-    new Place('Wrocław', L.latLng(51.107865, 17.029611), ['Gorzów Wielkopolski', 'Poznań', 'Łódź', 'Opole']),
-];
+class TargetPlace {
+    name;
+    road;
 
+    constructor(name) {
+        this.name = name;
+    }
+}
 
-class Map extends React.Component {
+class Road {
+    geoJSON;
+    distance;
+    time;
 
-    map;
-    tempMap;
+    constructor(geoJSON, distance, time) {
+        this.geoJSON = geoJSON;
+        this.distance = distance;
+        this.time = time;
+    }
+}
 
-    static GetPlaceIdx(placeName, array) {
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].name === placeName)
-                return i;
-        }
-        return -1;
+class RoadsMarker {
+    places;
+
+    constructor(places) {
+        this.places = places;
     }
 
-    RouterControlRoadsLinesToJSON = (JSONPath, places, map) => {
-        const roads = [];
-        places.forEach(function (place) {
-            place.connections.forEach(function (connection) {
-                let connectionIdx = Map.GetPlaceIdx(connection, places);
+    AddRoadsToTargetPlaces = () => {
+        let map = L.map("map", {
+            center: [52.227932, 21.012843],
+            zoom: 6,
+            layers: [
+                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
+                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }),
+            ],
+        });
+
+        places.forEach((place) => {
+            place.targetPlaces.forEach((targetPlace) => {
+                let connectionIdx = RoadsMarker.GetPlaceIdx(targetPlace);
                 let waypoints = [place.latLng, places[connectionIdx].latLng];
                 let control = L.routing.control({
                     waypoints,
                 }).addTo(map);
                 control.on('routeselected', (e) => {
-                    let road = {
+                    let geoJSON = {
                         "type": "Feature",
                         "geometry": {
                             "type": "LineString",
-                            "coordinates": Map.ArrayOfLatLAngToArrayOfNumbers(e.route.coordinates)
+                            "coordinates": RoadsMarker.LatLngObjectsArrayToArrayOfNumbers(e.route.coordinates)
                         },
                         "properties": {
                             "color": "red"
                         }
                     };
-                    roads.push(road);
+                    let distance = e.route.summary.totalDistance / 1000;
+                    let time = e.route.summary.totalTime;
+                    targetPlace.road = new Road(geoJSON, distance, time);
                 });
-
             });
         });
-        let data = {
+        console.log('places: ', places);
+    };
+
+    DrawRoads(map) {
+        let data = this.GetGeoJSON();
+        let geoJsonLayer = L.geoJson(data, {
+           onEachFeature: function (feature, layer) {
+               console.log('data: ', data);
+               if (layer instanceof L.Polyline) {
+                   layer.setStyle({
+                       'color': feature.properties.color
+                   });
+               }
+           }
+        });
+
+        map = L.map("map", {
+            center: [52.227932, 21.012843],
+            zoom: 6,
+            layers: [
+                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
+                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }),
+                geoJsonLayer,
+            ],
+        });
+
+        L.layerGroup().addTo(map);
+
+    }
+
+    GetGeoJSON = () => {
+        let roads = [];
+        let ifAdded = Array(places.length).fill(0).map(() => Array(places.length).fill(0));
+
+        for (let placeIdx = 0; placeIdx < this.places.length; placeIdx++) {
+            for (let targetIdx = 0; targetIdx < this.places[placeIdx].targetPlaces.length; targetIdx++) {
+                if (!ifAdded[targetIdx][placeIdx]) {
+                    roads.push(this.places[placeIdx].targetPlaces[targetIdx].road.GeoJSON);
+                    ifAdded[placeIdx][targetIdx] = 1;
+                }
+            }
+        }
+
+        return {
             "type": "FeatureCollection",
             "features": roads,
         };
+    };
 
+    DownloadObjectAsJSONFile = () => {
 
         setTimeout(() => {
                 function download(content, fileName, contentType) {
@@ -87,79 +141,75 @@ class Map extends React.Component {
                     a.click();
                 }
 
-                download(JSON.stringify(data), 'json.txt', 'text/plain');
+                download(JSON.stringify(this.places), 'json.txt', 'text/plain');
             }
             , 30000);
     };
 
 
+    static GetPlaceIdx = (place) => {
+        for (let i = 0; i < places.length; i++) {
+            if (places[i].name === place.name)
+                return i;
+        }
+        return -1;
+    };
+
     static LatLangToArray(latLang) {
         return [latLang.lng, latLang.lat];
     }
 
-    static ArrayOfLatLAngToArrayOfNumbers(LatLangArray) {
+    static LatLngObjectsArrayToArrayOfNumbers(LatLangObjectsArray) {
         let LatLangAsNumbers = [];
-        for (let i = 0; i < LatLangArray.length; i++) {
-            LatLangAsNumbers[i] = Map.LatLangToArray(LatLangArray[i]);
+        for (let i = 0; i < LatLangObjectsArray.length; i++) {
+            LatLangAsNumbers[i] = RoadsMarker.LatLangToArray(LatLangObjectsArray[i]);
         }
         return LatLangAsNumbers;
     }
 
+
+}
+
+const places = [
+    new Place('Szczecin', L.latLng(53.444738, 14.524450), [new TargetPlace('Gorzów Wielkopolski'), new TargetPlace('Gdańsk'), new TargetPlace('Bydgoszcz'), new TargetPlace('Poznań')]),
+    new Place('Poznań', L.latLng(52.410637, 16.918623), [new TargetPlace('Szczecin'), new TargetPlace('Gorzów Wielkopolski'), new TargetPlace('Wrocław'), new TargetPlace('Bydgoszcz'), new TargetPlace('Gdańsk'), new TargetPlace('Łódź'), new TargetPlace('Opole')]),
+    new Place('Olsztyn', L.latLng(53.773239, 20.476377), [new TargetPlace('Gdańsk'), new TargetPlace('Białystok'), new TargetPlace('Warszawa'), new TargetPlace('Bydgoszcz')]),
+    new Place('Kielce', L.latLng(50.864746, 20.628129), [new TargetPlace('Warszawa'), new TargetPlace('Lublin'), new TargetPlace('Kraków'), new TargetPlace('Łódź'), new TargetPlace('Rzeszów'), new TargetPlace('Katowice')]),
+    new Place('Katowice', L.latLng(50.254167, 19.020610), [new TargetPlace('Kraków'), new TargetPlace('Opole'), new TargetPlace('Kielce'), new TargetPlace('Łódź')]),
+    new Place('Gdańsk', L.latLng(54.379539, 18.622404), [new TargetPlace('Szczecin'), new TargetPlace('Poznań'), new TargetPlace('Bydgoszcz'), new TargetPlace('Olsztyn')]),
+    new Place('Białystok', L.latLng(53.133148, 23.167585), [new TargetPlace('Lublin'), new TargetPlace('Warszawa'), new TargetPlace('Bydgoszcz'), new TargetPlace('Olsztyn')]),
+    new Place('Rzeszów', L.latLng(50.031183, 22.003103), [new TargetPlace('Kraków'), new TargetPlace('Lublin'), new TargetPlace('Kielce')]),
+    new Place('Opole', L.latLng(50.670958, 17.925569), [new TargetPlace('Wrocław'), new TargetPlace('Poznań'), new TargetPlace('Kraków'), new TargetPlace('Łódź')]),
+    new Place('Warszawa', L.latLng(52.227932, 21.012843), [new TargetPlace('Łódź'), new TargetPlace('Białystok'), new TargetPlace('Kielce'), new TargetPlace('Bydgoszcz'), new TargetPlace('Lublin'), new TargetPlace('Olsztyn')]),
+    new Place('Kraków', L.latLng(50.062435, 19.959979), [new TargetPlace('Katowice'), new TargetPlace('Rzeszów'), new TargetPlace('Kielce')]),
+    new Place('Łódź', L.latLng(51.763257, 19.507721), [new TargetPlace('Warszawa'), new TargetPlace('Kielce'), new TargetPlace('Opole'), new TargetPlace('Katowice'), new TargetPlace('Wrocław'), new TargetPlace('Poznań'), new TargetPlace('Bydgoszcz')]),
+    new Place('Gorzów Wielkopolski', L.latLng(52.733179, 15.241680), [new TargetPlace('Szczecin'), new TargetPlace('Poznań'), new TargetPlace('Wrocław')]),
+    new Place('Lublin', L.latLng(51.234893, 22.570755), [new TargetPlace('Łódź'), new TargetPlace('Warszawa'), new TargetPlace('Białystok'), new TargetPlace('Rzeszów'), new TargetPlace('Kielce')]),
+    new Place('Bydgoszcz', L.latLng(53.121995, 18.018519), [new TargetPlace('Warszawa'), new TargetPlace('Białystok'), new TargetPlace('Olsztyn'), new TargetPlace('Gdańsk'), new TargetPlace('Szczecin'), new TargetPlace('Poznań'), new TargetPlace('Łódź')]),
+    new Place('Wrocław', L.latLng(51.107865, 17.029611), [new TargetPlace('Gorzów Wielkopolski'), new TargetPlace('Poznań'), new TargetPlace('Łódź'), new TargetPlace('Opole')]),
+];
+
+
+class Map extends React.Component {
+
+    map;
+    tempMap;
+
+
+    RouterControlRoadsLinesToJSON = (JSONPath, places, map) => {
+
+    };
+
+
     componentDidMount() {
 
-        //var geoJsonLayer = L.geoJson(data, {
-        //    onEachFeature: function (feature, layer) {
-        //        if (layer instanceof L.Polyline) {
-        //            layer.setStyle({
-        //                'color': feature.properties.color
-        //            });
-        //        }
-        //    }
-        //});
-        //this.RouterControlRoadsLinesToJSON('asd');
-        this.map = L.map("map", {
-            center: [52.227932, 21.012843],
-            zoom: 6,
-            layers: [
-                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
-                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }),
-                //geoJsonLayer,
-            ],
-        });
-//
-        L.layerGroup().addTo(this.map);
-//
-        this.RouterControlRoadsLinesToJSON('asd', places, this.map);
-        //console.log('Array: ', this.LatLangToArray(L.latLng(53.444738, 14.524450)));
-        //console.log(L.latLng(53.444738, 14.524450));
-//
-//
-        //this.tempMap = L.map("tempMap", {
-        //    center: [51.55, 19.08],
-        //    zoom: 6,
-        //    layers: [
-        //        L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
-        //            attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        //        })
-        //    ],
-        //});
-        //L.layerGroup().addTo(this.tempMap);
-        //let waypoints = [places[0], places[1]];
-        //let control = L.routing.control({waypoints});
-        //control.addTo(this.map);
-        //control.on('routeselected', (e) => {
-//
-        //    setTimeout(() => {
-        //        console.log('start adding: ');
-        //        let myLines = [{
-        //            "type": "LineString",
-        //            "coordinates": this.ArrayOfLatLAngToArrayOfNumbers(e.route.coordinates),
-        //        }];
-        //        console.log('myLines: ' + myLines);
-        //        L.geoJSON(myLines).addTo(this.tempMap);
-        //    }, 5000);
-        //});
+
+        //let roadsMarker = new RoadsMarker(places);
+        //roadsMarker.AddRoadsToTargetPlaces();
+        //roadsMarker.DownloadObjectAsJSONFile();
+        let places = require('../json/places.json');
+        let roadsMarker = new RoadsMarker(places);
+        roadsMarker.DrawRoads(this.map);
     }
 
 
