@@ -3,7 +3,8 @@ import L from "leaflet";
 import "leaflet-routing-machine";
 import "leaflet.icon.glyph";
 import "./map.css";
-
+import RoadsMarker from '../classes/RoadMarker.js'
+import TargetPlace from '../classes/TargetPlace';
 
 class Place {
     name;
@@ -15,159 +16,6 @@ class Place {
         this.latLng = latLng;
         this.targetPlaces = targetPlaces;
     }
-}
-
-class TargetPlace {
-    name;
-    road;
-
-    constructor(name) {
-        this.name = name;
-    }
-}
-
-class Road {
-    geoJSON;
-    distance;
-    time;
-
-    constructor(geoJSON, distance, time) {
-        this.geoJSON = geoJSON;
-        this.distance = distance;
-        this.time = time;
-    }
-}
-
-class RoadsMarker {
-    places;
-
-    constructor(places) {
-        this.places = places;
-    }
-
-    AddRoadsToTargetPlaces = () => {
-        let map = L.map("map", {
-            center: [52.227932, 21.012843],
-            zoom: 6,
-            layers: [
-                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
-                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }),
-            ],
-        });
-
-        places.forEach((place) => {
-            place.targetPlaces.forEach((targetPlace) => {
-                let connectionIdx = RoadsMarker.GetPlaceIdx(targetPlace);
-                let waypoints = [place.latLng, places[connectionIdx].latLng];
-                let control = L.routing.control({
-                    waypoints,
-                }).addTo(map);
-                control.on('routeselected', (e) => {
-                    let geoJSON = {
-                        "type": "Feature",
-                        "geometry": {
-                            "type": "LineString",
-                            "coordinates": RoadsMarker.LatLngObjectsArrayToArrayOfNumbers(e.route.coordinates)
-                        },
-                        "properties": {
-                            "color": "red"
-                        }
-                    };
-                    let distance = e.route.summary.totalDistance / 1000;
-                    let time = e.route.summary.totalTime;
-                    targetPlace.road = new Road(geoJSON, distance, time);
-                });
-            });
-        });
-        console.log('places: ', places);
-    };
-
-    DrawRoads(map) {
-        let data = this.GetGeoJSON();
-        let geoJsonLayer = L.geoJson(data, {
-           onEachFeature: function (feature, layer) {
-               console.log('data: ', data);
-               if (layer instanceof L.Polyline) {
-                   layer.setStyle({
-                       'color': feature.properties.color
-                   });
-               }
-           }
-        });
-
-        map = L.map("map", {
-            center: [52.227932, 21.012843],
-            zoom: 6,
-            layers: [
-                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
-                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }),
-                geoJsonLayer,
-            ],
-        });
-
-        L.layerGroup().addTo(map);
-
-    }
-
-    GetGeoJSON = () => {
-        let roads = [];
-        let ifAdded = Array(places.length).fill(0).map(() => Array(places.length).fill(0));
-
-        for (let placeIdx = 0; placeIdx < this.places.length; placeIdx++) {
-            for (let targetIdx = 0; targetIdx < this.places[placeIdx].targetPlaces.length; targetIdx++) {
-                if (!ifAdded[targetIdx][placeIdx]) {
-                    roads.push(this.places[placeIdx].targetPlaces[targetIdx].road.GeoJSON);
-                    ifAdded[placeIdx][targetIdx] = 1;
-                }
-            }
-        }
-
-        return {
-            "type": "FeatureCollection",
-            "features": roads,
-        };
-    };
-
-    DownloadObjectAsJSONFile = () => {
-
-        setTimeout(() => {
-                function download(content, fileName, contentType) {
-                    let a = document.createElement("a");
-                    let file = new Blob([content], {type: contentType});
-                    a.href = URL.createObjectURL(file);
-                    a.download = fileName;
-                    a.click();
-                }
-
-                download(JSON.stringify(this.places), 'json.txt', 'text/plain');
-            }
-            , 30000);
-    };
-
-
-    static GetPlaceIdx = (place) => {
-        for (let i = 0; i < places.length; i++) {
-            if (places[i].name === place.name)
-                return i;
-        }
-        return -1;
-    };
-
-    static LatLangToArray(latLang) {
-        return [latLang.lng, latLang.lat];
-    }
-
-    static LatLngObjectsArrayToArrayOfNumbers(LatLangObjectsArray) {
-        let LatLangAsNumbers = [];
-        for (let i = 0; i < LatLangObjectsArray.length; i++) {
-            LatLangAsNumbers[i] = RoadsMarker.LatLangToArray(LatLangObjectsArray[i]);
-        }
-        return LatLangAsNumbers;
-    }
-
-
 }
 
 const places = [
@@ -203,13 +51,39 @@ class Map extends React.Component {
 
     componentDidMount() {
 
+        this.map = L.map("map", {
+            center: [52.227932, 21.012843],
+            zoom: 6,
+            layers: [
+                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
+                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }),
+            ],
+        });
 
+        L.layerGroup().addTo(this.map);
         //let roadsMarker = new RoadsMarker(places);
         //roadsMarker.AddRoadsToTargetPlaces();
         //roadsMarker.DownloadObjectAsJSONFile();
         let places = require('../json/places.json');
         let roadsMarker = new RoadsMarker(places);
         roadsMarker.DrawRoads(this.map);
+       // roadsMarker.AddMarkers(this.map);
+        //let icon = L.icon({
+        //    iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
+        //    shadowUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
+//
+        //    iconSize:     [38, 95], // size of the icon
+        //    shadowSize:   [50, 64], // size of the shadow
+        //    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+        //    shadowAnchor: [4, 62],  // the same for the shadow
+        //    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        //});
+        //places.forEach((place) => {
+        //    let a = RoadsMarker.LatLangToArray(place.latLng);
+        //    console.log(a);
+        //    L.marker([53,53]).addTo(this.map);
+        //})
     }
 
 
