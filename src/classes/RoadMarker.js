@@ -124,16 +124,15 @@ class RoadsMarker {
             color = 'red';
 
         let placesCount = placesIndexes.length;
-        for (let i = 0; i < placesCount; i++) {
-            //var pointList = this.places[pointIdx].targetPlaces.find((place) => {place.name === this.places[pla]})
-            let a = this.places.find((x) => {return x.name === 'Warszawa'});
-            console.log('places: ', this.places);
-            console.log(a);
-            // var firstpolyline = new L.polyline(pointList {
-            //     color: 'red',
-            //     weight: 3,
-            //     opacity: 0.5
-            // }).addTo(map);
+        for (let i = 0; i < 1; i++) {
+            let nextPlaceName = this.places[i+1].name;
+            let pointsList = this.places[i].targetPlaces.find((place) => {return place.name === nextPlaceName}).road.GeoJSON.geometry.coordinates;
+            
+            let firstpolyline = new L.polyline(pointsList, {
+                color: 'yellow',
+                weight: 3,
+                opacity: 0.5
+            }).addTo(map);
         }
 
     }

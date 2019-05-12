@@ -71,7 +71,7 @@ class Map extends React.Component {
         roadsMarker.AddMarkers(this.map);
         console.log(roadsMarker);
         console.log(roadsMarker.GetAdjacencyMatrix());
-        roadsMarker.ChangeRoadColor([0,2,1]);
+        roadsMarker.ChangeRoadColor([0,1,5], 'white', this.map);
     }
 
 
