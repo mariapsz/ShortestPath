@@ -1,6 +1,7 @@
 import L from "leaflet";
 import "leaflet-routing-machine";
 import Road from './Road';
+import React from "react";
 
 class RoadsMarker {
     places;
@@ -81,7 +82,7 @@ class RoadsMarker {
     DownloadObjectAsJSONFile = () => {
         function download(content, fileName, contentType) {
             let a = document.createElement("a");
-            let file = new Blob([content], {type: contentType});
+            let file = new Blob([content], { type: contentType });
             a.href = URL.createObjectURL(file);
             a.download = fileName;
             a.click();
@@ -91,10 +92,50 @@ class RoadsMarker {
     };
 
     AddMarkers(map) {
-        let icon = L.divIcon();
         this.places.forEach((place) => {
-            L.marker(RoadsMarker.LatLangToArray(place.latLng), {icon: icon}).addTo(map);
+            let icon = L.divIcon({
+                html: `<div>${place.name}</div>`
+            });
+            L.marker(RoadsMarker.LatLangToArray(place.latLng), { icon: icon }).addTo(map);
         })
+    }
+
+    GetAdjacencyMatrix() {
+        let adjacencyMatrix = Array(this.places.length).fill(0).map(() => Array(this.places.length).fill(0));
+        const placesCount = this.places.length;
+
+        for (let i = 0; i < placesCount; i++) {
+            let targetPlacesCount = this.places[i].targetPlaces.length;
+            for (let j = 0; j < targetPlacesCount; j++) {
+                if (adjacencyMatrix[j][i] !== 0) {
+                    adjacencyMatrix[i][j] = adjacencyMatrix[j][i];
+                } else {
+                    let targetPlaceIdx = this.GetPlaceIdx(this.places[i].targetPlaces[j]);
+                    adjacencyMatrix[i][targetPlaceIdx] = this.places[i].targetPlaces[j].road.distance;
+                }
+            }
+        }
+
+        return adjacencyMatrix;
+    }
+
+    ChangeRoadColor(placesIndexes, color, map) {
+        if (color === undefined)
+            color = 'red';
+
+        let placesCount = placesIndexes.length;
+        for (let i = 0; i < placesCount; i++) {
+            //var pointList = this.places[pointIdx].targetPlaces.find((place) => {place.name === this.places[pla]})
+            let a = this.places.find((x) => {return x.name === 'Warszawa'});
+            console.log('places: ', this.places);
+            console.log(a);
+            // var firstpolyline = new L.polyline(pointList {
+            //     color: 'red',
+            //     weight: 3,
+            //     opacity: 0.5
+            // }).addTo(map);
+        }
+
     }
 
     GetPlaceIdx = (place) => {
@@ -106,7 +147,7 @@ class RoadsMarker {
     };
 
     static LatLangToArray(latLang) {
-        return [latLang.lng, latLang.lat];
+        return [latLang.lat, latLang.lng];
     }
 
     static LatLngObjectsArrayToArrayOfNumbers(LatLangObjectsArray) {

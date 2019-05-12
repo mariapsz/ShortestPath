@@ -68,22 +68,10 @@ class Map extends React.Component {
         let places = require('../json/places.json');
         let roadsMarker = new RoadsMarker(places);
         roadsMarker.DrawRoads(this.map);
-       // roadsMarker.AddMarkers(this.map);
-        //let icon = L.icon({
-        //    iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
-        //    shadowUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
-//
-        //    iconSize:     [38, 95], // size of the icon
-        //    shadowSize:   [50, 64], // size of the shadow
-        //    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-        //    shadowAnchor: [4, 62],  // the same for the shadow
-        //    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        //});
-        //places.forEach((place) => {
-        //    let a = RoadsMarker.LatLangToArray(place.latLng);
-        //    console.log(a);
-        //    L.marker([53,53]).addTo(this.map);
-        //})
+        roadsMarker.AddMarkers(this.map);
+        console.log(roadsMarker);
+        console.log(roadsMarker.GetAdjacencyMatrix());
+        roadsMarker.ChangeRoadColor([0,2,1]);
     }
 
 
