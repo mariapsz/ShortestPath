@@ -49,7 +49,7 @@ class RoadsMarker {
 
     DrawRoads(map) {
         let data = this.GetGeoJSON();
-        let geoJsonLayer = L.geoJson(data, {
+        L.geoJson(data, {
             onEachFeature: function (feature, layer) {
                 if (layer instanceof L.Polyline) {
                     layer.setStyle({
@@ -67,7 +67,7 @@ class RoadsMarker {
         for (let placeIdx = 0; placeIdx < this.places.length; placeIdx++) {
             for (let targetIdx = 0; targetIdx < this.places[placeIdx].targetPlaces.length; targetIdx++) {
                 if (!ifAdded[targetIdx][placeIdx]) {
-                    roads.push(this.places[placeIdx].targetPlaces[targetIdx].road.GeoJSON);
+                    roads.push(this.places[placeIdx].targetPlaces[targetIdx].road.geoJSON);
                     ifAdded[placeIdx][targetIdx] = 1;
                 }
             }
@@ -126,8 +126,8 @@ class RoadsMarker {
         let placesCount = placesIndexes.length;
         for (let i = 0; i < 1; i++) {
             let nextPlaceName = this.places[i+1].name;
-            let pointsList = this.places[i].targetPlaces.find((place) => {return place.name === nextPlaceName}).road.GeoJSON.geometry.coordinates;
-            
+            let pointsList = this.places[i].targetPlaces.find((place) => {return place.name === nextPlaceName}).road.geoJSON.geometry.coordinates;
+            console.log(pointsList[0].forEach((point) => (point =  point.reverse())));
             let firstpolyline = new L.polyline(pointsList, {
                 color: 'yellow',
                 weight: 3,
@@ -149,10 +149,14 @@ class RoadsMarker {
         return [latLang.lat, latLang.lng];
     }
 
+    static LatLangToArrayReversed(latLang) {
+        return [latLang.lng, latLang.lat];
+    }
+
     static LatLngObjectsArrayToArrayOfNumbers(LatLangObjectsArray) {
         let LatLangAsNumbers = [];
         for (let i = 0; i < LatLangObjectsArray.length; i++) {
-            LatLangAsNumbers[i] = RoadsMarker.LatLangToArray(LatLangObjectsArray[i]);
+            LatLangAsNumbers[i] = RoadsMarker.LatLangToArrayReversed(LatLangObjectsArray[i]);
         }
         return LatLangAsNumbers;
     }

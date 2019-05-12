@@ -51,6 +51,11 @@ class Map extends React.Component {
 
     componentDidMount() {
 
+        //
+        // let roadsMarker = new RoadsMarker(places);
+        // roadsMarker.AddRoadsToTargetPlaces();
+        // setTimeout(() => roadsMarker.DownloadObjectAsJSONFile(),60000);
+
         this.map = L.map("map", {
             center: [52.227932, 21.012843],
             zoom: 6,
@@ -62,9 +67,6 @@ class Map extends React.Component {
         });
 
         L.layerGroup().addTo(this.map);
-        //let roadsMarker = new RoadsMarker(places);
-        //roadsMarker.AddRoadsToTargetPlaces();
-        //roadsMarker.DownloadObjectAsJSONFile();
         let places = require('../json/places.json');
         let roadsMarker = new RoadsMarker(places);
         roadsMarker.DrawRoads(this.map);
