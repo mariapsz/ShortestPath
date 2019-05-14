@@ -1,10 +1,13 @@
 import L from "leaflet";
 import "leaflet-routing-machine";
 import Road from './Road';
-import React from "react";
 
 class RoadsMarker {
     places;
+    startPoint = null;
+    targetPoint = null;
+    currentRoute = null;
+    polyline = null;
 
     constructor(places) {
         this.places = places;
@@ -53,7 +56,8 @@ class RoadsMarker {
             onEachFeature: function (feature, layer) {
                 if (layer instanceof L.Polyline) {
                     layer.setStyle({
-                        'color': feature.properties.color
+                        'color': '#cc5127',
+                        'weight': 1,
                     });
                 }
             }
@@ -82,7 +86,7 @@ class RoadsMarker {
     DownloadObjectAsJSONFile = () => {
         function download(content, fileName, contentType) {
             let a = document.createElement("a");
-            let file = new Blob([content], { type: contentType });
+            let file = new Blob([content], {type: contentType});
             a.href = URL.createObjectURL(file);
             a.download = fileName;
             a.click();
@@ -94,10 +98,27 @@ class RoadsMarker {
     AddMarkers(map) {
         this.places.forEach((place) => {
             let icon = L.divIcon({
-                html: `<div>${place.name}</div>`
+                html: `<div>${place.name}</div>`,
+                className: 'div-icon',
+                iconSize: null,
             });
-            L.marker(RoadsMarker.LatLangToArray(place.latLng), { icon: icon }).addTo(map);
+            let marker = L.marker(RoadsMarker.LatLangToArray(place.latLng), {icon, title: `${place.name}`});
+            marker.addTo(map);
+            marker.on('click', (event) => {
+                if (this.startPoint === null) {
+                    this.startPoint = event.target.options.title;
+                    console.log(event.target);
+                    if (this.currentRoute != null) {
+                        this.polyline.remove();
+                        this.currentRoute = null;
+                    }
+                } else if (this.targetPoint === null) {
+                    this.targetPoint = event.target.options.title;
+                    this.checkRoad(this.startPoint, this.targetPoint, map);
+                }
+            });
         })
+
     }
 
     GetAdjacencyMatrix() {
@@ -119,22 +140,41 @@ class RoadsMarker {
         return adjacencyMatrix;
     }
 
-    ChangeRoadColor(placesIndexes, color, map) {
+    ChangeRoadColor(placesIndexes, map, color) {
         if (color === undefined)
-            color = 'red';
+            color = '#efe1c8';
 
         let placesCount = placesIndexes.length;
         for (let i = 0; i < 1; i++) {
-            let nextPlaceName = this.places[i+1].name;
-            let pointsList = this.places[i].targetPlaces.find((place) => {return place.name === nextPlaceName}).road.geoJSON.geometry.coordinates;
-            console.log(pointsList[0].forEach((point) => (point =  point.reverse())));
-            let firstpolyline = new L.polyline(pointsList, {
-                color: 'yellow',
-                weight: 3,
-                opacity: 0.5
+            let nextPlaceName = this.places[i + 1].name;
+            let pointsList = this.places[i].targetPlaces.find((place) => {
+                return place.name === nextPlaceName
+            }).road.geoJSON.geometry.coordinates.map((row) => row.slice());
+            RoadsMarker.ReverseEachRowIn2DimArray(pointsList);
+            let test = Array.from(this.places[i].targetPlaces.find((place) => {
+                return place.name === nextPlaceName
+            }).road.geoJSON.geometry.coordinates);
+            console.log(color, placesIndexes, pointsList[0], test[0]);
+            this.polyline = new L.Polyline(pointsList, {
+                color: color,
+                weight: 6,
+                opacity: 0.3,
             }).addTo(map);
         }
+    }
 
+    checkRoad(startPoint, targetPoint, map) {
+        this.currentRoute = [0, 1, 5];
+        this.ChangeRoadColor(this.currentRoute, map);
+        this.startPoint = null;
+        this.targetPoint = null;
+    }
+
+    static ReverseEachRowIn2DimArray(array) {
+        let length = array.length;
+        for (let i = 0; i < length; i++) {
+            array[i] = array[i].reverse();
+        }
     }
 
     GetPlaceIdx = (place) => {

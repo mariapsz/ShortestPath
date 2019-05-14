@@ -41,13 +41,11 @@ const places = [
 class Map extends React.Component {
 
     map;
-    tempMap;
 
-
-    RouterControlRoadsLinesToJSON = (JSONPath, places, map) => {
-
-    };
-
+    checkRoad(startPointName, targetPointName){
+        console.log(startPointName);
+        console.log(targetPointName);
+    }
 
     componentDidMount() {
 
@@ -60,8 +58,10 @@ class Map extends React.Component {
             center: [52.227932, 21.012843],
             zoom: 6,
             layers: [
-                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
-                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 19
                 }),
             ],
         });
@@ -73,9 +73,7 @@ class Map extends React.Component {
         roadsMarker.AddMarkers(this.map);
         console.log(roadsMarker);
         console.log(roadsMarker.GetAdjacencyMatrix());
-        roadsMarker.ChangeRoadColor([0,1,5], 'white', this.map);
     }
-
 
     render() {
         return <div>
