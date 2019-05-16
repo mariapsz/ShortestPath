@@ -125,7 +125,7 @@ class RoadsMarker {
         if (this.startPoint === null) {
             this.startPoint = event.target.options.title;
             marker.remove();
-            marker = marker.options.icon
+            marker = marker.options.icon;
             if (this.currentRoute != null) {
                 this.polylines.map((road) => road.remove());
                 this.currentRoute = null;
