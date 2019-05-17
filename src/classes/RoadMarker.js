@@ -4,6 +4,8 @@ import Road from './Road';
 
 class RoadsMarker {
     places;
+    floydWarshall;
+    map;
     startPointName = null;
     targetPointName = null;
     currentTrace = null;
@@ -11,8 +13,15 @@ class RoadsMarker {
     startPointMarker = null;
     targetPointMarker = null;
 
-    constructor(places) {
+    constructor(places, floydWarshall, map) {
         this.places = places;
+        this.floydWarshall = floydWarshall;
+        this.map = map;
+    }
+
+    start() {
+        this.DrawRoads(this.map);
+        this.AddMarkers(this.map);
     }
 
     AddRoadsToTargetPlaces = () => {
@@ -32,7 +41,7 @@ class RoadsMarker {
                 let waypoints = [place.latLng, this.places[connectionIdx].latLng];
                 let control = L.routing.control({
                     waypoints,
-                }).addTo(map);
+                }).addTo(this.map);
                 control.on('routeselected', (e) => {
                     let geoJSON = {
                         "type": "Feature",
@@ -52,7 +61,7 @@ class RoadsMarker {
         });
     };
 
-    DrawRoads(map) {
+    DrawRoads() {
         let data = this.GetGeoJSON();
         L.geoJson(data, {
             onEachFeature: function (feature, layer) {
@@ -63,7 +72,7 @@ class RoadsMarker {
                     });
                 }
             }
-        }).addTo(map);
+        }).addTo(this.map);
     }
 
     GetGeoJSON = () => {
@@ -85,7 +94,7 @@ class RoadsMarker {
         };
     };
 
-    DownloadObjectAsJSONFile = () => {
+    DownloadPlacesAsJSONFile = () => {
         function download(content, fileName, contentType) {
             let a = document.createElement("a");
             let file = new Blob([content], {type: contentType});
@@ -94,10 +103,22 @@ class RoadsMarker {
             a.click();
         }
 
-        download(JSON.stringify(this.places), 'json.txt', 'text/plain');
+        download(JSON.stringify(this.places), 'places.json', 'text/plain');
     };
 
-    AddMarkers(map) {
+    DownloadAdjecencyMatrixsAsJSONFile = () => {
+        function download(content, fileName, contentType) {
+            let a = document.createElement("a");
+            let file = new Blob([content], {type: contentType});
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        download(JSON.stringify(this.GetAdjacencyMatrix()), 'adjecancyMatrix.json', 'text/plain');
+    };
+
+    AddMarkers() {
 
         this.places.forEach((place) => {
             let icon = L.divIcon({
@@ -107,88 +128,94 @@ class RoadsMarker {
             });
 
             let marker = L.marker(RoadsMarker.LatLangToArray(place.latLng), {icon, title: `${place.name}`});
-            marker.addTo(map);
+            marker.addTo(this.map);
             marker.on('click', (event) => {
-                this.SetTrace(event, map);
+                this.SetTrace(event);
             });
         });
     }
 
-    SetTrace(event, map) {
+    SetTrace(event) {
         let marker = event.target;
 
         if (this.startPointName === null) {
             this.startPointName = marker.options.title;
             if (this.startPointMarker !== null)
-                this.RemoveCurrentStartPointMarker(map);
+                this.RemoveCurrentStartPointMarker(this.map);
             if (this.targetPointMarker !== null)
-                this.RemoveCurrentTargetPointMarker(map);
-            this.SetMarkerAsStartPointMarker(marker, map);
+                this.RemoveCurrentTargetPointMarker(this.map);
+            this.SetMarkerAsStartPointMarker(marker, this.map);
             if (this.currentTrace != null) {
                 this.markedRoads.map((road) => road.remove());
                 this.currentTrace = null;
             }
         } else if (this.targetPointName === null) {
             this.targetPointName = marker.options.title;
-            this.SetMarkerAsTargetPointMarker(marker, map);
-            this.checkRoad(this.startPointName, this.targetPointName, map);
+            this.SetMarkerAsTargetPointMarker(marker, this.map);
+            this.checkShortestPath(this.startPointName, this.targetPointName, this.map);
         }
     }
 
-    RemoveCurrentStartPointMarker = (map) => {
+    RemoveCurrentStartPointMarker = () => {
         let defaultIcon = L.divIcon({
             html: `<div>${this.startPointMarker.options.title}</div>`,
             className: 'div-icon',
             iconSize: null,
         });
-        let defaultMarker = L.marker(this.startPointMarker._latlng, {icon: defaultIcon, title: this.startPointMarker.options.title});
+        let defaultMarker = L.marker(this.startPointMarker._latlng, {
+            icon: defaultIcon,
+            title: this.startPointMarker.options.title
+        });
         defaultMarker.on('click', (event) => {
-            this.SetTrace(event, map);
+            this.SetTrace(event, this.map);
         });
         this.startPointMarker.remove();
         this.startPointMarker = null;
-        defaultMarker.addTo(map);
-        console.log('Start: ',defaultMarker);
+        defaultMarker.addTo(this.map);
+        console.log('Start: ', defaultMarker);
     };
 
-    SetMarkerAsStartPointMarker = (marker, map) => {
+    SetMarkerAsStartPointMarker = (marker) => {
         let startIcon = L.divIcon({
             html: `<div>Start: </br>${marker.options.title}</div>`,
             className: 'div-icon',
             iconSize: null,
         });
-        this.startPointMarker = L.marker(marker._latlng,{icon: startIcon, title: marker.options.title});
+        this.startPointMarker = L.marker(marker._latlng, {icon: startIcon, title: marker.options.title});
         marker.remove();
-        this.startPointMarker.addTo(map);
+        this.startPointMarker.addTo(this.map);
     };
 
-    RemoveCurrentTargetPointMarker = (map) => {
+    RemoveCurrentTargetPointMarker = () => {
         console.log('title: ', this.targetPointMarker);
         let defaultIcon = L.divIcon({
             html: `<div>${this.targetPointMarker.options.title}</div>`,
             className: 'div-icon',
             iconSize: null,
         });
-        let defaultMarker = L.marker(this.targetPointMarker._latlng,{icon: defaultIcon, title: this.targetPointMarker.options.title});
+        let defaultMarker = L.marker(this.targetPointMarker._latlng, {
+            icon: defaultIcon,
+            title: this.targetPointMarker.options.title
+        });
         defaultMarker.on('click', (event) => {
-            this.SetTrace(event, map);
+            this.SetTrace(event, this.map);
         });
         this.targetPointMarker.remove();
         this.targetPointMarker = null;
-        defaultMarker.addTo(map);
-        console.log('target: ',defaultMarker);
+        defaultMarker.addTo(this.map);
+        console.log('target: ', defaultMarker);
 
     };
 
-    SetMarkerAsTargetPointMarker = (marker, map) => {
+    SetMarkerAsTargetPointMarker = (marker) => {
         let targetIcon = L.divIcon({
             html: `<div>Koniec: </br>${marker.options.title}</div>`,
             className: 'div-icon',
             iconSize: null,
         });
-        this.targetPointMarker = L.marker(marker._latlng,{icon: targetIcon, title: marker.options.title});
+        this.targetPointMarker = L.marker(marker._latlng, {icon: targetIcon, title: marker.options.title});
         marker.remove();
-        this.targetPointMarker.addTo(map);
+        this.targetPointMarker.addTo(this.map);
     };
 
     GetAdjacencyMatrix() {
@@ -210,7 +237,7 @@ class RoadsMarker {
         return adjacencyMatrix;
     }
 
-    ChangeRoadColor(placesIndexes, map, color) {
+    ChangeRoadColor(placesIndexes, color) {
         if (color === undefined)
             color = '#efe1c8';
 
@@ -221,21 +248,20 @@ class RoadsMarker {
                 return place.name === nextPlaceName
             }).road.geoJSON.geometry.coordinates.map((row) => row.slice());
             RoadsMarker.ReverseEachRowIn2DimArray(pointsList);
-            let test = Array.from(this.places[i].targetPlaces.find((place) => {
-                return place.name === nextPlaceName
-            }).road.geoJSON.geometry.coordinates);
             let polyline = new L.Polyline(pointsList, {
                 color: color,
                 weight: 6,
                 opacity: 0.3,
-            }).addTo(map);
+            }).addTo(this.map);
             this.markedRoads.push(polyline);
         }
     }
 
-    checkRoad(startPoint, targetPoint, map) {
-        this.currentTrace = [0, 1, 5, 14];
-        this.ChangeRoadColor(this.currentTrace, map);
+    checkShortestPath(startPointName, targetPointName) {
+        let startPointIdx = this.places.findIndex(place => place.name === startPointName);
+        let targetPointIdx = this.places.findIndex(place => place.name === targetPointName);
+        this.currentTrace = this.floydWarshall.getShortestPath(startPointIdx, targetPointIdx);
+        this.ChangeRoadColor(this.currentTrace);
         this.startPointName = null;
         this.targetPointName = null;
     }

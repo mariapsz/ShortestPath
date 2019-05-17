@@ -6,7 +6,7 @@ import "./map.css";
 import RoadsMarker from '../classes/RoadMarker.js';
 import TargetPlace from '../classes/TargetPlace';
 import Place from '../classes/Place';
-
+import FloydWarshall from '../classes/FloydWarshall';
 
 const places = [
     new Place('Szczecin', L.latLng(53.444738, 14.524450), [new TargetPlace('Gorzów Wielkopolski'), new TargetPlace('Gdańsk'), new TargetPlace('Bydgoszcz'), new TargetPlace('Poznań')]),
@@ -27,22 +27,16 @@ const places = [
     new Place('Wrocław', L.latLng(51.107865, 17.029611), [new TargetPlace('Gorzów Wielkopolski'), new TargetPlace('Poznań'), new TargetPlace('Łódź'), new TargetPlace('Opole')]),
 ];
 
-
 class Map extends React.Component {
 
     map;
-
-    checkRoad(startPointName, targetPointName){
-        console.log(startPointName);
-        console.log(targetPointName);
-    }
 
     componentDidMount() {
 
         //
         // let roadsMarker = new RoadsMarker(places);
         // roadsMarker.AddRoadsToTargetPlaces();
-        // setTimeout(() => roadsMarker.DownloadObjectAsJSONFile(),60000);
+        // setTimeout(() => roadsMarker.DownloadPlacesAsJSONFile(),60000);
 
         this.map = L.map("map", {
             center: [52.227932, 21.012843],
@@ -58,17 +52,15 @@ class Map extends React.Component {
 
         L.layerGroup().addTo(this.map);
         let places = require('../json/places.json');
-        let roadsMarker = new RoadsMarker(places);
-        roadsMarker.DrawRoads(this.map);
-        roadsMarker.AddMarkers(this.map);
-        console.log(roadsMarker);
-        console.log(roadsMarker.GetAdjacencyMatrix());
+        let adjecancyMatrix = require('../json/adjecancyMatrix.json');
+        let floydWarshall = new FloydWarshall(adjecancyMatrix);
+        let roadsMarker = new RoadsMarker(places, floydWarshall, this.map);
+        roadsMarker.start();
     }
 
     render() {
         return <div>
             <div id="map"/>
-            <div id="tempMap"/>
         </div>;
     }
 }
