@@ -7,6 +7,7 @@ class App extends React.Component {
         let a = 'hello';
         return (
             <div>
+
                 <Map/>
             </div>
         );

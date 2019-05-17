@@ -3,20 +3,10 @@ import L from "leaflet";
 import "leaflet-routing-machine";
 import "leaflet.icon.glyph";
 import "./map.css";
-import RoadsMarker from '../classes/RoadMarker.js'
+import RoadsMarker from '../classes/RoadMarker.js';
 import TargetPlace from '../classes/TargetPlace';
+import Place from '../classes/Place';
 
-class Place {
-    name;
-    latLng;
-    targetPlaces;
-
-    constructor(name, latLng, targetPlaces) {
-        this.name = name;
-        this.latLng = latLng;
-        this.targetPlaces = targetPlaces;
-    }
-}
 
 const places = [
     new Place('Szczecin', L.latLng(53.444738, 14.524450), [new TargetPlace('Gorzów Wielkopolski'), new TargetPlace('Gdańsk'), new TargetPlace('Bydgoszcz'), new TargetPlace('Poznań')]),
