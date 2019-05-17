@@ -1,14 +1,20 @@
 import React from 'react';
 import Map from './components/map';
+import Summary from "./components/summary";
+import './App.css'
 
 class App extends React.Component {
 
     render() {
-        let a = 'hello';
         return (
             <div>
+                <div className="split left">
+                    <Map/>
+                </div>
 
-                <Map/>
+                <div className="split right">
+                    <Summary/>
+                </div>
             </div>
         );
     }
