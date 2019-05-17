@@ -121,6 +121,8 @@ class RoadsMarker {
             this.startPointName = marker.options.title;
             if (this.startPointMarker !== null)
                 this.RemoveCurrentStartPointMarker(map);
+            if (this.targetPointMarker !== null)
+                this.RemoveCurrentTargetPointMarker(map);
             this.SetMarkerAsStartPointMarker(marker, map);
             if (this.currentTrace != null) {
                 this.markedRoads.map((road) => road.remove());
@@ -128,8 +130,6 @@ class RoadsMarker {
             }
         } else if (this.targetPointName === null) {
             this.targetPointName = marker.options.title;
-            if (this.targetPointMarker !== null)
-                this.RemoveCurrentTargetPointMarker(map);
             this.SetMarkerAsTargetPointMarker(marker, map);
             this.checkRoad(this.startPointName, this.targetPointName, map);
         }
@@ -141,10 +141,14 @@ class RoadsMarker {
             className: 'div-icon',
             iconSize: null,
         });
-        let changed = L.marker(this.startPointMarker._latlng, {icon: defaultIcon, title: this.startPointMarker.options.title});
+        let defaultMarker = L.marker(this.startPointMarker._latlng, {icon: defaultIcon, title: this.startPointMarker.options.title});
+        defaultMarker.on('click', (event) => {
+            this.SetTrace(event, map);
+        });
         this.startPointMarker.remove();
         this.startPointMarker = null;
-        changed.addTo(map);
+        defaultMarker.addTo(map);
+        console.log('Start: ',defaultMarker);
     };
 
     SetMarkerAsStartPointMarker = (marker, map) => {
@@ -165,10 +169,15 @@ class RoadsMarker {
             className: 'div-icon',
             iconSize: null,
         });
-        let defaultMarker = L.marker(this.startPointMarker._latlng,{icon: defaultIcon, title: this.targetPointMarker.options.title});
+        let defaultMarker = L.marker(this.targetPointMarker._latlng,{icon: defaultIcon, title: this.targetPointMarker.options.title});
+        defaultMarker.on('click', (event) => {
+            this.SetTrace(event, map);
+        });
         this.targetPointMarker.remove();
         this.targetPointMarker = null;
         defaultMarker.addTo(map);
+        console.log('target: ',defaultMarker);
+
     };
 
     SetMarkerAsTargetPointMarker = (marker, map) => {
