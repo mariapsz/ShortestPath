@@ -29,6 +29,10 @@ const places = [
 
 class Map extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
     map;
 
     componentDidMount() {
@@ -56,6 +60,7 @@ class Map extends React.Component {
         let floydWarshall = new FloydWarshall(adjecancyMatrix);
         let roadsMarker = new RoadsMarker(places, floydWarshall, this.map);
         roadsMarker.start();
+        this.props.handleRoadsMarker(roadsMarker);
     }
 
     render() {
