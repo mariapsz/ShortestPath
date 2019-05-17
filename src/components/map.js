@@ -35,8 +35,8 @@ class Map extends React.Component {
 
         //
         // let roadsMarker = new RoadsMarker(places);
-        // roadsMarker.AddRoadsToTargetPlaces();
-        // setTimeout(() => roadsMarker.DownloadPlacesAsJSONFile(),60000);
+        // roadsMarker.addRoadsToTargetPlaces();
+        // setTimeout(() => roadsMarker.downloadPlacesAsJSONFile(),60000);
 
         this.map = L.map("map", {
             center: [52.227932, 21.012843],
