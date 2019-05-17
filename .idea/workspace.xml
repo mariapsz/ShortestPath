@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a5244526-69fa-48ec-a0dd-87dad3cfbc3d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/RoadMarker.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/RoadMarker.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -19,7 +18,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/map.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="750">
+            <state>
               <caret line="30" column="19" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
             </state>
           </provider>
@@ -28,7 +27,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/map.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="725">
+            <state>
               <caret line="35" column="14" selection-start-line="35" selection-start-column="14" selection-end-line="35" selection-end-column="14" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -40,10 +39,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/classes/RoadMarker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="127" column="41" selection-start-line="127" selection-start-column="41" selection-end-line="127" selection-end-column="41" />
+            <state relative-caret-position="342">
+              <caret line="155" column="101" selection-start-line="155" selection-start-column="101" selection-end-line="155" selection-end-column="101" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
+                <element signature="e#107#114#1" expanded="true" />
+                <element signature="e#124#130#1" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -52,7 +53,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
+            <state>
               <caret line="9" selection-start-line="9" selection-end-line="9" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -70,11 +71,12 @@
       <find>get</find>
       <find>getP</find>
       <find>getPlace</find>
-      <find>conso</find>
       <find>chang</find>
       <find>draw</find>
       <find>ico</find>
       <find>marke</find>
+      <find>polyl</find>
+      <find>conso</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -101,15 +103,17 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="71" />
+    <option name="x" value="-1817" />
+    <option name="y" value="-131" />
     <option name="width" value="1070" />
-    <option name="height" value="868" />
+    <option name="height" value="860" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -144,13 +148,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="C:/code/budowaStronWWW" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -198,16 +201,18 @@
       <workItem from="1557731978058" duration="13814000" />
       <workItem from="1557852238333" duration="7725000" />
       <workItem from="1557983430034" duration="70000" />
+      <workItem from="1558074882634" duration="5913000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109201000" />
+    <option name="totallyTimeSpent" value="115114000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <frame x="-1928" y="-193" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1311787" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10906217" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -221,7 +226,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50052685" side_tool="true" weight="0.22185062" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.49947312" visible="true" weight="0.043235704" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49947312" visible="true" weight="0.034559645" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -351,14 +356,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/map.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
+        <state>
           <caret line="30" column="19" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/components/map.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="725">
+        <state>
           <caret line="35" column="14" selection-start-line="35" selection-start-column="14" selection-end-line="35" selection-end-column="14" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -368,7 +373,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
+        <state>
           <caret line="9" selection-start-line="9" selection-end-line="9" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
@@ -378,10 +383,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/classes/RoadMarker.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="127" column="41" selection-start-line="127" selection-start-column="41" selection-end-line="127" selection-end-column="41" />
+        <state relative-caret-position="342">
+          <caret line="155" column="101" selection-start-line="155" selection-start-column="101" selection-end-line="155" selection-end-column="101" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#107#114#1" expanded="true" />
+            <element signature="e#124#130#1" expanded="true" />
           </folding>
         </state>
       </provider>

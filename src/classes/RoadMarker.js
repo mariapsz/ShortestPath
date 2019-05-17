@@ -4,11 +4,12 @@ import Road from './Road';
 
 class RoadsMarker {
     places;
-    startPoint = null;
-    targetPoint = null;
-    currentRoute = null;
-    polylines = [];
-    markers = [];
+    startPointName = null;
+    targetPointName = null;
+    currentTrace = null;
+    markedRoads = [];
+    startPointMarker = null;
+    targetPointMarker = null;
 
     constructor(places) {
         this.places = places;
@@ -107,34 +108,79 @@ class RoadsMarker {
 
             let marker = L.marker(RoadsMarker.LatLangToArray(place.latLng), {icon, title: `${place.name}`});
             marker.addTo(map);
-            this.markers.push(marker);
             marker.on('click', (event) => {
-                this.SetTrace(event);
-
+                this.SetTrace(event, map);
             });
         });
     }
 
-    SetTrace(event){
-        let marker = this.markers.find(marker => marker === event.target);
-        let startIcon = L.divIcon({
-            html: `<div>Start: </br>${event.target.options.title}</div>`,
+    SetTrace(event, map) {
+        let marker = event.target;
+
+        if (this.startPointName === null) {
+            this.startPointName = marker.options.title;
+            if (this.startPointMarker !== null)
+                this.RemoveCurrentStartPointMarker(map);
+            this.SetMarkerAsStartPointMarker(marker, map);
+            if (this.currentTrace != null) {
+                this.markedRoads.map((road) => road.remove());
+                this.currentTrace = null;
+            }
+        } else if (this.targetPointName === null) {
+            this.targetPointName = marker.options.title;
+            if (this.targetPointMarker !== null)
+                this.RemoveCurrentTargetPointMarker(map);
+            this.SetMarkerAsTargetPointMarker(marker, map);
+            this.checkRoad(this.startPointName, this.targetPointName, map);
+        }
+    }
+
+    RemoveCurrentStartPointMarker = (map) => {
+        let defaultIcon = L.divIcon({
+            html: `<div>${this.startPointMarker.options.title}</div>`,
             className: 'div-icon',
             iconSize: null,
         });
-        if (this.startPoint === null) {
-            this.startPoint = event.target.options.title;
-            marker.remove();
-            marker = marker.options.icon;
-            if (this.currentRoute != null) {
-                this.polylines.map((road) => road.remove());
-                this.currentRoute = null;
-            }
-        } else if (this.targetPoint === null) {
-            this.targetPoint = event.target.options.title;
-            this.checkRoad(this.startPoint, this.targetPoint, map);
-        }
-    }
+        let changed = L.marker(this.startPointMarker._latlng, {icon: defaultIcon, title: this.startPointMarker.options.title});
+        this.startPointMarker.remove();
+        this.startPointMarker = null;
+        changed.addTo(map);
+    };
+
+    SetMarkerAsStartPointMarker = (marker, map) => {
+        let startIcon = L.divIcon({
+            html: `<div>Start: </br>${marker.options.title}</div>`,
+            className: 'div-icon',
+            iconSize: null,
+        });
+        this.startPointMarker = L.marker(marker._latlng,{icon: startIcon, title: marker.options.title});
+        marker.remove();
+        this.startPointMarker.addTo(map);
+    };
+
+    RemoveCurrentTargetPointMarker = (map) => {
+        console.log('title: ', this.targetPointMarker);
+        let defaultIcon = L.divIcon({
+            html: `<div>${this.targetPointMarker.options.title}</div>`,
+            className: 'div-icon',
+            iconSize: null,
+        });
+        let defaultMarker = L.marker(this.startPointMarker._latlng,{icon: defaultIcon, title: this.targetPointMarker.options.title});
+        this.targetPointMarker.remove();
+        this.targetPointMarker = null;
+        defaultMarker.addTo(map);
+    };
+
+    SetMarkerAsTargetPointMarker = (marker, map) => {
+        let targetIcon = L.divIcon({
+            html: `<div>Koniec: </br>${marker.options.title}</div>`,
+            className: 'div-icon',
+            iconSize: null,
+        });
+        this.targetPointMarker = L.marker(marker._latlng,{icon: targetIcon, title: marker.options.title});
+        marker.remove();
+        this.targetPointMarker.addTo(map);
+    };
 
     GetAdjacencyMatrix() {
         let adjacencyMatrix = Array(this.places.length).fill(0).map(() => Array(this.places.length).fill(0));
@@ -174,15 +220,15 @@ class RoadsMarker {
                 weight: 6,
                 opacity: 0.3,
             }).addTo(map);
-            this.polylines.push(polyline);
+            this.markedRoads.push(polyline);
         }
     }
 
     checkRoad(startPoint, targetPoint, map) {
-        this.currentRoute = [0, 1, 5, 14];
-        this.ChangeRoadColor(this.currentRoute, map);
-        this.startPoint = null;
-        this.targetPoint = null;
+        this.currentTrace = [0, 1, 5, 14];
+        this.ChangeRoadColor(this.currentTrace, map);
+        this.startPointName = null;
+        this.targetPointName = null;
     }
 
     static ReverseEachRowIn2DimArray(array) {
