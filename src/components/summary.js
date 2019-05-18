@@ -1,6 +1,6 @@
 import React from "react";
 import './summary.css';
-
+import TraceSummary from './traceSummary.js';
 class Summary extends React.Component {
     constructor(props) {
         super(props);
@@ -9,7 +9,7 @@ class Summary extends React.Component {
 
     render() {
         return <div className='summaryContainer'>
-            <div className=''>
+            <div>
                 <div className='labelWrapper'>
                     <h2>
                         Program wyznaczający najkrótszą drogę pomiędzy wybranymi miejsowościami
@@ -25,9 +25,7 @@ class Summary extends React.Component {
                         <div>{this.getTargetPointName()}</div>
                     </div>
                 </div>
-                <div className='traceSummary'>
-
-                </div>
+                <TraceSummary/>
             </div>
 
         </div>
