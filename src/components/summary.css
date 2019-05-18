@@ -1,0 +1,41 @@
+.summaryContainer {
+    background: #090909;
+    height: 100%;
+    width: 100%;
+    color: darkgray;
+    padding: 5.3vh 0 0 1vh;
+    font-family: 'Paytone One', sans-serif;
+}
+
+h2 {
+    margin: 0;
+    font-size: 3.6vh;
+}
+
+label {
+    width: 30%;
+}
+
+.labelWrapper {
+    padding-left: 2vh;
+    padding-right: 2vh;
+    color: antiquewhite;
+}
+
+.endpointsWrapper {
+    padding: 10vh 0 0 4vh;
+}
+
+.endpoint {
+    display: flex;
+    height: 7vh;
+}
+
+.traceSummary {
+
+}
+
+.instruction {
+    font-size: 2vh;
+    padding-top: 2vh;
+}

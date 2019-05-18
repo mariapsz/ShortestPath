@@ -12,19 +12,21 @@ class RoadsMarker {
     markedRoads = [];
     startPointMarker = null;
     targetPointMarker = null;
+    summaryComponentHandler;
 
-    constructor(places, floydWarshall, map) {
+    constructor(places, floydWarshall, map, summaryComponentHandler) {
         this.places = places;
         this.floydWarshall = floydWarshall;
         this.map = map;
+        this.summaryComponentHandler = summaryComponentHandler;
     }
 
-    start() {
-        this.DrawRoads(this.map);
-        this.AddMarkers(this.map);
+    start(summaryComponentHandler) {
+        this.drawRoads(this.map);
+        this.addMarkers(this.map);
     }
 
-    AddRoadsToTargetPlaces = () => {
+    addRoadsToTargetPlaces = () => {
         let map = L.map("map", {
             center: [52.227932, 21.012843],
             zoom: 6,
@@ -37,7 +39,7 @@ class RoadsMarker {
 
         this.places.forEach((place) => {
             place.targetPlaces.forEach((targetPlace) => {
-                let connectionIdx = this.GetPlaceIdx(targetPlace);
+                let connectionIdx = this.getPlaceIdx(targetPlace);
                 let waypoints = [place.latLng, this.places[connectionIdx].latLng];
                 let control = L.routing.control({
                     waypoints,
@@ -47,7 +49,7 @@ class RoadsMarker {
                         "type": "Feature",
                         "geometry": {
                             "type": "LineString",
-                            "coordinates": RoadsMarker.LatLngObjectsArrayToArrayOfNumbers(e.route.coordinates)
+                            "coordinates": RoadsMarker.latLngObjectsArrayToArrayOfNumbers(e.route.coordinates)
                         },
                         "properties": {
                             "color": "red"
@@ -61,8 +63,8 @@ class RoadsMarker {
         });
     };
 
-    DrawRoads() {
-        let data = this.GetGeoJSON();
+    drawRoads() {
+        let data = this.getGeoJSON();
         L.geoJson(data, {
             onEachFeature: function (feature, layer) {
                 if (layer instanceof L.Polyline) {
@@ -75,7 +77,7 @@ class RoadsMarker {
         }).addTo(this.map);
     }
 
-    GetGeoJSON = () => {
+    getGeoJSON = () => {
         let roads = [];
         let ifAdded = Array(this.places.length).fill(0).map(() => Array(this.places.length).fill(0));
 
@@ -94,7 +96,7 @@ class RoadsMarker {
         };
     };
 
-    DownloadPlacesAsJSONFile = () => {
+    downloadPlacesAsJSONFile = () => {
         function download(content, fileName, contentType) {
             let a = document.createElement("a");
             let file = new Blob([content], {type: contentType});
@@ -106,7 +108,7 @@ class RoadsMarker {
         download(JSON.stringify(this.places), 'places.json', 'text/plain');
     };
 
-    DownloadAdjecencyMatrixsAsJSONFile = () => {
+    downloadAdjecencyMatrixsAsJSONFile = () => {
         function download(content, fileName, contentType) {
             let a = document.createElement("a");
             let file = new Blob([content], {type: contentType});
@@ -115,10 +117,10 @@ class RoadsMarker {
             a.click();
         }
 
-        download(JSON.stringify(this.GetAdjacencyMatrix()), 'adjecancyMatrix.json', 'text/plain');
+        download(JSON.stringify(this.getAdjacencyMatrix()), 'adjecancyMatrix.json', 'text/plain');
     };
 
-    AddMarkers() {
+    addMarkers() {
 
         this.places.forEach((place) => {
             let icon = L.divIcon({
@@ -127,36 +129,37 @@ class RoadsMarker {
                 iconSize: null,
             });
 
-            let marker = L.marker(RoadsMarker.LatLangToArray(place.latLng), {icon, title: `${place.name}`});
+            let marker = L.marker(RoadsMarker.latLangToArray(place.latLng), {icon, title: `${place.name}`});
             marker.addTo(this.map);
             marker.on('click', (event) => {
-                this.SetTrace(event);
+                this.setTrace(event);
+                this.summaryComponentHandler(this);
             });
         });
     }
 
-    SetTrace(event) {
+    setTrace(event) {
         let marker = event.target;
 
         if (this.startPointName === null) {
             this.startPointName = marker.options.title;
             if (this.startPointMarker !== null)
-                this.RemoveCurrentStartPointMarker(this.map);
+                this.removeCurrentStartPointMarker(this.map);
             if (this.targetPointMarker !== null)
-                this.RemoveCurrentTargetPointMarker(this.map);
-            this.SetMarkerAsStartPointMarker(marker, this.map);
+                this.removeCurrentTargetPointMarker(this.map);
+            this.setMarkerAsStartPointMarker(marker, this.map);
             if (this.currentTrace != null) {
                 this.markedRoads.map((road) => road.remove());
                 this.currentTrace = null;
             }
         } else if (this.targetPointName === null) {
             this.targetPointName = marker.options.title;
-            this.SetMarkerAsTargetPointMarker(marker, this.map);
+            this.setMarkerAsTargetPointMarker(marker, this.map);
             this.checkShortestPath(this.startPointName, this.targetPointName, this.map);
         }
     }
 
-    RemoveCurrentStartPointMarker = () => {
+    removeCurrentStartPointMarker = () => {
         let defaultIcon = L.divIcon({
             html: `<div>${this.startPointMarker.options.title}</div>`,
             className: 'div-icon',
@@ -167,7 +170,8 @@ class RoadsMarker {
             title: this.startPointMarker.options.title
         });
         defaultMarker.on('click', (event) => {
-            this.SetTrace(event, this.map);
+            this.setTrace(event, this.map);
+            this.summaryComponentHandler(this);
         });
         this.startPointMarker.remove();
         this.startPointMarker = null;
@@ -175,10 +179,10 @@ class RoadsMarker {
         console.log('Start: ', defaultMarker);
     };
 
-    SetMarkerAsStartPointMarker = (marker) => {
+    setMarkerAsStartPointMarker = (marker) => {
         let startIcon = L.divIcon({
             html: `<div>Start: </br>${marker.options.title}</div>`,
-            className: 'div-icon',
+            className: 'div-icon endpoint',
             iconSize: null,
         });
         this.startPointMarker = L.marker(marker._latlng, {icon: startIcon, title: marker.options.title});
@@ -186,7 +190,7 @@ class RoadsMarker {
         this.startPointMarker.addTo(this.map);
     };
 
-    RemoveCurrentTargetPointMarker = () => {
+    removeCurrentTargetPointMarker = () => {
         console.log('title: ', this.targetPointMarker);
         let defaultIcon = L.divIcon({
             html: `<div>${this.targetPointMarker.options.title}</div>`,
@@ -198,7 +202,8 @@ class RoadsMarker {
             title: this.targetPointMarker.options.title
         });
         defaultMarker.on('click', (event) => {
-            this.SetTrace(event, this.map);
+            this.setTrace(event, this.map);
+            this.summaryComponentHandler(this);
         });
         this.targetPointMarker.remove();
         this.targetPointMarker = null;
@@ -207,10 +212,10 @@ class RoadsMarker {
 
     };
 
-    SetMarkerAsTargetPointMarker = (marker) => {
+    setMarkerAsTargetPointMarker = (marker) => {
         let targetIcon = L.divIcon({
             html: `<div>Koniec: </br>${marker.options.title}</div>`,
-            className: 'div-icon',
+            className: 'div-icon endpoint',
             iconSize: null,
         });
         this.targetPointMarker = L.marker(marker._latlng, {icon: targetIcon, title: marker.options.title});
@@ -218,7 +223,7 @@ class RoadsMarker {
         this.targetPointMarker.addTo(this.map);
     };
 
-    GetAdjacencyMatrix() {
+    getAdjacencyMatrix() {
         let adjacencyMatrix = Array(this.places.length).fill(0).map(() => Array(this.places.length).fill(0));
         const placesCount = this.places.length;
 
@@ -228,7 +233,7 @@ class RoadsMarker {
                 if (adjacencyMatrix[j][i] !== 0) {
                     adjacencyMatrix[i][j] = adjacencyMatrix[j][i];
                 } else {
-                    let targetPlaceIdx = this.GetPlaceIdx(this.places[i].targetPlaces[j]);
+                    let targetPlaceIdx = this.getPlaceIdx(this.places[i].targetPlaces[j]);
                     adjacencyMatrix[i][targetPlaceIdx] = this.places[i].targetPlaces[j].road.distance;
                 }
             }
@@ -237,17 +242,17 @@ class RoadsMarker {
         return adjacencyMatrix;
     }
 
-    ChangeRoadColor(placesIndexes, color) {
+    changeRoadColor(placesIndexes, color) {
         if (color === undefined)
             color = '#efe1c8';
 
         let placesCount = placesIndexes.length;
-        for (let i = 0; i < placesCount - 2; i++) {
+        for (let i = 0; i < placesCount - 1; i++) {
             let nextPlaceName = this.places[placesIndexes[i + 1]].name;
-            let pointsList = this.places[i].targetPlaces.find((place) => {
+            let pointsList = this.places[placesIndexes[i]].targetPlaces.find((place) => {
                 return place.name === nextPlaceName
             }).road.geoJSON.geometry.coordinates.map((row) => row.slice());
-            RoadsMarker.ReverseEachRowIn2DimArray(pointsList);
+            RoadsMarker.reverseEachRowIn2DimArray(pointsList);
             let polyline = new L.Polyline(pointsList, {
                 color: color,
                 weight: 6,
@@ -261,19 +266,19 @@ class RoadsMarker {
         let startPointIdx = this.places.findIndex(place => place.name === startPointName);
         let targetPointIdx = this.places.findIndex(place => place.name === targetPointName);
         this.currentTrace = this.floydWarshall.getShortestPath(startPointIdx, targetPointIdx);
-        this.ChangeRoadColor(this.currentTrace);
+        this.changeRoadColor(this.currentTrace);
         this.startPointName = null;
         this.targetPointName = null;
     }
 
-    static ReverseEachRowIn2DimArray(array) {
+    static reverseEachRowIn2DimArray(array) {
         let length = array.length;
         for (let i = 0; i < length; i++) {
             array[i] = array[i].reverse();
         }
     }
 
-    GetPlaceIdx = (place) => {
+    getPlaceIdx = (place) => {
         for (let i = 0; i < this.places.length; i++) {
             if (this.places[i].name === place.name)
                 return i;
@@ -281,18 +286,18 @@ class RoadsMarker {
         return -1;
     };
 
-    static LatLangToArray(latLang) {
+    static latLangToArray(latLang) {
         return [latLang.lat, latLang.lng];
     }
 
-    static LatLangToArrayReversed(latLang) {
+    static latLangToArrayReversed(latLang) {
         return [latLang.lng, latLang.lat];
     }
 
-    static LatLngObjectsArrayToArrayOfNumbers(LatLangObjectsArray) {
+    static latLngObjectsArrayToArrayOfNumbers(LatLangObjectsArray) {
         let LatLangAsNumbers = [];
         for (let i = 0; i < LatLangObjectsArray.length; i++) {
-            LatLangAsNumbers[i] = RoadsMarker.LatLangToArrayReversed(LatLangObjectsArray[i]);
+            LatLangAsNumbers[i] = RoadsMarker.latLangToArrayReversed(LatLangObjectsArray[i]);
         }
         return LatLangAsNumbers;
     }
