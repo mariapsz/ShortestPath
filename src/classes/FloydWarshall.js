@@ -6,7 +6,7 @@ class FloydWarshall {
 
     getShortestPath(startPointIdx, targetPointIdx){
         // (...)
-        return [0, 1, 5, 14];
+        return [0, 1, 14, 5];
     }
 }
 

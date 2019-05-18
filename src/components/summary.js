@@ -25,7 +25,7 @@ class Summary extends React.Component {
                         <div>{this.getTargetPointName()}</div>
                     </div>
                 </div>
-                <TraceSummary/>
+                <TraceSummary roadsMarker={this.props.roadsMarker}/>
             </div>
 
         </div>

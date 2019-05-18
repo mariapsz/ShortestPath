@@ -245,9 +245,9 @@ class RoadsMarker {
             color = '#efe1c8';
 
         let placesCount = placesIndexes.length;
-        for (let i = 0; i < placesCount - 2; i++) {
+        for (let i = 0; i < placesCount - 1; i++) {
             let nextPlaceName = this.places[placesIndexes[i + 1]].name;
-            let pointsList = this.places[i].targetPlaces.find((place) => {
+            let pointsList = this.places[placesIndexes[i]].targetPlaces.find((place) => {
                 return place.name === nextPlaceName
             }).road.geoJSON.geometry.coordinates.map((row) => row.slice());
             RoadsMarker.reverseEachRowIn2DimArray(pointsList);
