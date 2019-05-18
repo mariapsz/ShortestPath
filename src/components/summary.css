@@ -1,10 +1,31 @@
-.container {
+.summaryContainer {
     background: #090909;
     height: 100%;
     width: 100%;
-    color: white;
+    color: rgb(253, 243, 214);
+    padding: 5.3vh 0 0 1vh;
 }
 
 h2 {
     margin: 0;
+}
+
+label {
+    width:30%;
+}
+.labelWrapper {
+
+}
+
+.endpointsWrapper {
+    padding: 10vh 0 0 4vh;
+}
+
+.endpoint {
+    display: flex;
+    height: 7vh;
+}
+
+.traceSummary {
+
 }

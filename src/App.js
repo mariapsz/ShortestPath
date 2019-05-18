@@ -23,7 +23,7 @@ class App extends React.Component {
 
                 <div className="split right">
                     <Summary
-                        displayInfo={this.state.roadsMarker}/>
+                        roadsMarker={this.state.roadsMarker}/>
                 </div>
             </div>
         );
@@ -31,7 +31,7 @@ class App extends React.Component {
 
     onHandle = (roadsMarker) => {
         this.setState({
-            roadsMarker: roadsMarker,
+            roadsMarker,
         })
     }
 }

@@ -133,6 +133,7 @@ class RoadsMarker {
             marker.addTo(this.map);
             marker.on('click', (event) => {
                 this.setTrace(event);
+                this.summaryComponentHandler(this);
             });
         });
     }
@@ -156,8 +157,6 @@ class RoadsMarker {
             this.setMarkerAsTargetPointMarker(marker, this.map);
             this.checkShortestPath(this.startPointName, this.targetPointName, this.map);
         }
-
-        this.summaryComponentHandler(this);
     }
 
     removeCurrentStartPointMarker = () => {

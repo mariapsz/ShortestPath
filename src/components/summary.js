@@ -8,29 +8,38 @@ class Summary extends React.Component {
 
 
     render() {
-        return <div className='container'>
-            <div>
-                <div>
+        return <div className='summaryContainer'>
+            <div className=''>
+                <div className='labelWrapper'>
                     <h2>
                         Program wyznaczający najkrótszą drogę pomiędzy wybranymi miejsowościami
                     </h2>
                 </div>
-                <label>Początek trasy:</label>
-                <div>{this.getStartPointName() ? this.getStartPointName() : ''}</div>
+                <div className='endpointsWrapper'>
+                    <div className='endpoint'>
+                        <label>Początek trasy:</label>
+                        <div>{this.getStartPointName()}</div>
+                    </div>
+                    <div className='endpoint'>
+                        <label>Koniec trasy:</label>
+                        <div>{this.getTargetPointName()}</div>
+                    </div>
+                </div>
+                <div className='traceSummary'>
 
-                <label>Koniec trasy:</label>
-                <div>{this.getTargetPointName() ? this.getTargetPointName() : ''}</div>
+                </div>
             </div>
 
         </div>
     }
 
     getStartPointName = () => {
-        return this.props.displayInfo ? this.props.displayInfo.startPointMarker.options.title : '';
+        console.log('this roads marker: ', this.props.roadsMarker);
+        return this.props.roadsMarker ? this.props.roadsMarker.startPointMarker.options.title : '';
     };
 
     getTargetPointName = () => {
-        return this.props.displayInfo ? this.props.displayInfo.targetPointMarker.options.title : '';
+        return this.props.roadsMarker && this.props.roadsMarker.targetPointMarker ? this.props.roadsMarker.targetPointMarker.options.title : '';
     }
 }
 
