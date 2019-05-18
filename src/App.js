@@ -31,15 +31,7 @@ class App extends React.Component {
 
     onHandle = (roadsMarker) => {
         this.setState({
-            roadsMarker,
-        },() => {
-            setTimeout(() => {
-                this.setState({
-                    roadsMarker: {
-                        places: [{name: 'Jakies inne miasto'}, {name: 'Jeszcze jakies inne miasto'}, {name: 'trzecie inne miasto'}],
-                    }
-                })
-            }, 10000)
+            roadsMarker: roadsMarker,
         })
     }
 }

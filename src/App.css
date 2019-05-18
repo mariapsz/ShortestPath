@@ -1,18 +1,14 @@
 .split {
     height: 100%;
-    width: 50%;
     position: fixed;
-    z-index: 1;
-    top: 0;
-    overflow-x: hidden;
 }
 
-/* Control the left side */
 .left {
+    width: 60%;
     left: 0;
 }
 
-/* Control the right side */
 .right {
+    width: 40%;
     right: 0;
 }

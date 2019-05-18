@@ -12,14 +12,16 @@ class RoadsMarker {
     markedRoads = [];
     startPointMarker = null;
     targetPointMarker = null;
+    summaryComponentHandler;
 
-    constructor(places, floydWarshall, map) {
+    constructor(places, floydWarshall, map, summaryComponentHandler) {
         this.places = places;
         this.floydWarshall = floydWarshall;
         this.map = map;
+        this.summaryComponentHandler = summaryComponentHandler;
     }
 
-    start() {
+    start(summaryComponentHandler) {
         this.drawRoads(this.map);
         this.addMarkers(this.map);
     }
@@ -154,6 +156,8 @@ class RoadsMarker {
             this.setMarkerAsTargetPointMarker(marker, this.map);
             this.checkShortestPath(this.startPointName, this.targetPointName, this.map);
         }
+
+        this.summaryComponentHandler(this);
     }
 
     removeCurrentStartPointMarker = () => {

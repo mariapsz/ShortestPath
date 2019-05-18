@@ -9,17 +9,28 @@ class Summary extends React.Component {
 
     render() {
         return <div className='container'>
-            {this.props.displayInfo ? this.displayInfo() : 'Nie ma jeszcze nic'}
+            <div>
+                <div>
+                    <h2>
+                        Program wyznaczający najkrótszą drogę pomiędzy wybranymi miejsowościami
+                    </h2>
+                </div>
+                <label>Początek trasy:</label>
+                <div>{this.getStartPointName() ? this.getStartPointName() : ''}</div>
+
+                <label>Koniec trasy:</label>
+                <div>{this.getTargetPointName() ? this.getTargetPointName() : ''}</div>
+            </div>
+
         </div>
     }
 
-    displayInfo = () => {
-        const nazwyMiast = [];
-        this.props.displayInfo.places.forEach(place => {
-            nazwyMiast.push(place.name);
-            nazwyMiast.push(<br/>)
-        })
-        return nazwyMiast;
+    getStartPointName = () => {
+        return this.props.displayInfo ? this.props.displayInfo.startPointMarker.options.title : '';
+    };
+
+    getTargetPointName = () => {
+        return this.props.displayInfo ? this.props.displayInfo.targetPointMarker.options.title : '';
     }
 }
 

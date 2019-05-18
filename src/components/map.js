@@ -3,7 +3,7 @@ import L from "leaflet";
 import "leaflet-routing-machine";
 import "leaflet.icon.glyph";
 import "./map.css";
-import RoadsMarker from '../classes/RoadMarker.js';
+import RoadsMarker from '../classes/RoadsMarker.js';
 import TargetPlace from '../classes/TargetPlace';
 import Place from '../classes/Place';
 import FloydWarshall from '../classes/FloydWarshall';
@@ -43,8 +43,8 @@ class Map extends React.Component {
         // setTimeout(() => roadsMarker.downloadPlacesAsJSONFile(),60000);
 
         this.map = L.map("map", {
-            center: [52.227932, 21.012843],
-            zoom: 6,
+            center: [52.227932, 19.2],
+            zoom: 7,
             layers: [
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -58,9 +58,9 @@ class Map extends React.Component {
         let places = require('../json/places.json');
         let adjecancyMatrix = require('../json/adjecancyMatrix.json');
         let floydWarshall = new FloydWarshall(adjecancyMatrix);
-        let roadsMarker = new RoadsMarker(places, floydWarshall, this.map);
+        let roadsMarker = new RoadsMarker(places, floydWarshall, this.map, this.props.handleRoadsMarker);
         roadsMarker.start();
-        this.props.handleRoadsMarker(roadsMarker);
+
     }
 
     render() {
