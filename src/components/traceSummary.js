@@ -17,7 +17,7 @@ class TraceSummary extends React.Component {
 
     getTraceInfo() {
         let results = [];
-        results.push(<div>{this.props.roadsMarker.startPointMarker.options.title}</div>);
+        results.push(<div className='placeName endpoint'>{this.props.roadsMarker.startPointMarker.options.title}</div>);
         let places = this.props.roadsMarker.places;
         let tracePlacesIdx = this.props.roadsMarker.currentTrace;
         console.log('trace: ', tracePlacesIdx);
@@ -28,9 +28,20 @@ class TraceSummary extends React.Component {
             let distance = this.props.roadsMarker.places[i].targetPlaces.find((place) => {
                 return place.name === nextPlaceName
             }).road.distance;
-            results.push(<div>
-                <div>{distance} km</div>
-                <div>{nextPlaceName}</div>
+            if (i + 1 !== tracePlacesLength - 1)
+                results.push(<div>
+                    <div className='distanceWrapper'>
+                        <div className='arrow'>&#8595;</div>
+                        <div className='distance'>{distance} km</div>
+                    </div>
+                    <div className='placeName'>{nextPlaceName}</div>
+                </div>);
+            else results.push(<div>
+                <div className='distanceWrapper'>
+                    <div className='arrow'>&#8595;</div>
+                    <div className='distance'>{distance} km</div>
+                </div>
+                <div className='placeName endpoint'>{nextPlaceName}</div>
             </div>);
         }
 

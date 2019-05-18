@@ -14,6 +14,7 @@ class Summary extends React.Component {
                     <h2>
                         Program wyznaczający najkrótszą drogę pomiędzy wybranymi miejsowościami
                     </h2>
+                    <div className='instruction'>Aby rozpocząć, proszę kliknąć w jedną z zaznaczonych miejscowości na mapie</div>
                 </div>
                 <div className='endpointsWrapper'>
                     <div className='endpoint'>

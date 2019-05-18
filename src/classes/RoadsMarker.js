@@ -171,6 +171,7 @@ class RoadsMarker {
         });
         defaultMarker.on('click', (event) => {
             this.setTrace(event, this.map);
+            this.summaryComponentHandler(this);
         });
         this.startPointMarker.remove();
         this.startPointMarker = null;
@@ -202,6 +203,7 @@ class RoadsMarker {
         });
         defaultMarker.on('click', (event) => {
             this.setTrace(event, this.map);
+            this.summaryComponentHandler(this);
         });
         this.targetPointMarker.remove();
         this.targetPointMarker = null;

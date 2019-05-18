@@ -2,20 +2,24 @@
     background: #090909;
     height: 100%;
     width: 100%;
-    color: rgb(253, 243, 214);
+    color: darkgray;
     padding: 5.3vh 0 0 1vh;
+    font-family: 'Paytone One', sans-serif;
 }
 
 h2 {
     margin: 0;
+    font-size: 3.6vh;
 }
 
 label {
-    width:30%;
+    width: 30%;
 }
 
 .labelWrapper {
-
+    padding-left: 2vh;
+    padding-right: 2vh;
+    color: antiquewhite;
 }
 
 .endpointsWrapper {
@@ -29,4 +33,9 @@ label {
 
 .traceSummary {
 
+}
+
+.instruction {
+    font-size: 2vh;
+    padding-top: 2vh;
 }
