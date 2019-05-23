@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a5244526-69fa-48ec-a0dd-87dad3cfbc3d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/FloydWarshall.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/FloydWarshall.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/RoadsMarker.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/RoadsMarker.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/map.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/json/adjecancyMatrix.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/json/adjecancyMatrix.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -65,8 +61,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/map.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="672">
-              <caret line="32" column="21" lean-forward="true" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
+            <state relative-caret-position="243">
+              <caret line="61" column="28" selection-start-line="61" selection-start-column="28" selection-end-line="61" selection-end-column="28" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
                 <element signature="e#0#6#0" expanded="true" />
@@ -111,8 +107,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/classes/FloydWarshall.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="59" selection-start-line="59" selection-end-line="60" />
+            <state relative-caret-position="273">
+              <caret line="54" column="16" selection-start-line="54" selection-start-column="16" selection-end-line="54" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -159,10 +155,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-967" />
-    <option name="y" value="-185" />
-    <option name="width" value="974" />
-    <option name="height" value="1047" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1616" />
+    <option name="height" value="876" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -264,18 +260,18 @@
       <workItem from="1557219398357" duration="9926000" />
       <workItem from="1558163071027" duration="4873000" />
       <workItem from="1558205333097" duration="10322000" />
-      <workItem from="1558592468659" duration="8364000" />
+      <workItem from="1558592468659" duration="12498000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="74598000" />
+    <option name="totallyTimeSpent" value="78732000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-193" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.015806112" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.019011406" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -465,22 +461,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/classes/RoadsMarker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="226" column="82" lean-forward="true" selection-start-line="226" selection-start-column="82" selection-end-line="226" selection-end-column="82" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#107#114#1" expanded="true" />
-            <element signature="e#124#130#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/map.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="32" column="21" lean-forward="true" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
+        <state relative-caret-position="243">
+          <caret line="61" column="28" selection-start-line="61" selection-start-column="28" selection-end-line="61" selection-end-column="28" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
             <element signature="e#0#6#0" expanded="true" />
@@ -499,10 +483,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/classes/RoadsMarker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="226" column="82" lean-forward="true" selection-start-line="226" selection-start-column="82" selection-end-line="226" selection-end-column="82" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#107#114#1" expanded="true" />
+            <element signature="e#124#130#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/classes/FloydWarshall.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="59" selection-start-line="59" selection-end-line="60" />
+        <state relative-caret-position="273">
+          <caret line="54" column="16" selection-start-line="54" selection-start-column="16" selection-end-line="54" selection-end-column="16" />
         </state>
       </provider>
     </entry>
