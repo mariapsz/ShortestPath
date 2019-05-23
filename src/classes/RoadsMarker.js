@@ -224,21 +224,23 @@ class RoadsMarker {
     };
 
     getAdjacencyMatrix() {
-        let adjacencyMatrix = Array(this.places.length).fill(0).map(() => Array(this.places.length).fill(0));
+        let adjacencyMatrix = Array(this.places.length).fill(Infinity).map(() => Array(this.places.length).fill(Infinity));
         const placesCount = this.places.length;
 
         for (let i = 0; i < placesCount; i++) {
+            adjacencyMatrix[i][i] = 0;
             let targetPlacesCount = this.places[i].targetPlaces.length;
             for (let j = 0; j < targetPlacesCount; j++) {
-                if (adjacencyMatrix[j][i] !== 0) {
+                if (adjacencyMatrix[j][i] !== Infinity) {
                     adjacencyMatrix[i][j] = adjacencyMatrix[j][i];
                 } else {
                     let targetPlaceIdx = this.getPlaceIdx(this.places[i].targetPlaces[j]);
                     adjacencyMatrix[i][targetPlaceIdx] = this.places[i].targetPlaces[j].road.distance;
                 }
+
             }
         }
-
+        console.log('adje', adjacencyMatrix);
         return adjacencyMatrix;
     }
 

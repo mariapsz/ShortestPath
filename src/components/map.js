@@ -60,6 +60,7 @@ class Map extends React.Component {
         let floydWarshall = new FloydWarshall(adjecancyMatrix);
         let roadsMarker = new RoadsMarker(places, floydWarshall, this.map, this.props.handleRoadsMarker);
         roadsMarker.start();
+        floydWarshall.setDistanceMatrix();
 
     }
 
