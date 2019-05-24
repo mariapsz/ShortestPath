@@ -14,7 +14,7 @@ class RoadsMarker {
     targetPointMarker = null;
     summaryComponentHandler;
 
-    constructor(places, floydWarshall, map, summaryComponentHandler) {
+    constructor(places, map, floydWarshall, summaryComponentHandler) {
         this.places = places;
         this.floydWarshall = floydWarshall;
         this.map = map;
@@ -27,15 +27,15 @@ class RoadsMarker {
     }
 
     addRoadsToTargetPlaces = () => {
-        let map = L.map("map", {
-            center: [52.227932, 21.012843],
-            zoom: 6,
-            layers: [
-                L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
-                    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }),
-            ],
-        });
+        //let map = L.map("map", {
+        //    center: [52.227932, 21.012843],
+        //    zoom: 6,
+        //    layers: [
+        //        L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
+        //            attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        //        }),
+        //    ],
+        //});
 
         this.places.forEach((place) => {
             place.targetPlaces.forEach((targetPlace) => {
@@ -231,16 +231,15 @@ class RoadsMarker {
             adjacencyMatrix[i][i] = 0;
             let targetPlacesCount = this.places[i].targetPlaces.length;
             for (let j = 0; j < targetPlacesCount; j++) {
-                if (adjacencyMatrix[j][i] !== Infinity) {
-                    adjacencyMatrix[i][j] = adjacencyMatrix[j][i];
+                let targetPlaceIdx = this.getPlaceIdx(this.places[i].targetPlaces[j]);
+                if (adjacencyMatrix[targetPlaceIdx][i] !== Infinity) {
+                    adjacencyMatrix[i][targetPlaceIdx] = adjacencyMatrix[targetPlaceIdx][i];
                 } else {
-                    let targetPlaceIdx = this.getPlaceIdx(this.places[i].targetPlaces[j]);
                     adjacencyMatrix[i][targetPlaceIdx] = this.places[i].targetPlaces[j].road.distance;
                 }
 
             }
         }
-        console.log('adje', adjacencyMatrix);
         return adjacencyMatrix;
     }
 

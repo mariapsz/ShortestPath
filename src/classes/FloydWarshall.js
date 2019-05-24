@@ -33,7 +33,7 @@ class FloydWarshall {
             for (let j = 0; j < adjacencyMatrixLength; j++) {
                 let distance = this.adjacencyMatrix[i][j];
                 let predecessor;
-                if (distance !== Infinity) {
+                if (distance !== Infinity && distance !== 0) {
                     predecessor = i;
                 } else predecessor = null;
                 this.distanceMatrix[i][j] = new Distance(distance, predecessor);
@@ -44,16 +44,13 @@ class FloydWarshall {
     setDistanceMatrix() {
 
         this.distanceMatrix = this.adjacencyMatrix.map(row => row.slice());
-        console.log(this.distanceMatrix);
+
         this.initializeDistanceMatrix();
 
         let distMatrixLength = this.distanceMatrix.length;
         for (let k = 0; k < distMatrixLength; k++) {
             for (let i = 0; i < distMatrixLength; i++) {
                 for (let j = 0; j < distMatrixLength; j++) {
-                    // Check if going from i to k then from k to j is better
-                    // than directly going from i to j. If yes then update
-                    // i to j value to the new value
                     if (this.distanceMatrix[i][j].weight > this.distanceMatrix[i][k].weight + this.distanceMatrix[k][j].weight) {
                         this.distanceMatrix[i][j].weight = this.distanceMatrix[i][k].weight + this.distanceMatrix[k][j].weight;
                         this.distanceMatrix[i][j].predecessor = k;
@@ -62,6 +59,7 @@ class FloydWarshall {
             }
         }
         console.log('dist',  this.distanceMatrix);
+        console.table( this.adjacencyMatrix);
     }
 
     getShortestPath(startPointIdx, targetPointIdx) {

@@ -21,7 +21,7 @@ const places = [
     new Place('Warszawa', L.latLng(52.227932, 21.012843), [new TargetPlace('Łódź'), new TargetPlace('Białystok'), new TargetPlace('Kielce'), new TargetPlace('Bydgoszcz'), new TargetPlace('Lublin'), new TargetPlace('Olsztyn')]),
     new Place('Kraków', L.latLng(50.062435, 19.959979), [new TargetPlace('Katowice'), new TargetPlace('Rzeszów'), new TargetPlace('Kielce')]),
     new Place('Łódź', L.latLng(51.763257, 19.507721), [new TargetPlace('Warszawa'), new TargetPlace('Kielce'), new TargetPlace('Opole'), new TargetPlace('Katowice'), new TargetPlace('Wrocław'), new TargetPlace('Poznań'), new TargetPlace('Bydgoszcz')]),
-    new Place('Gorzów Wielkopolski', L.latLng(52.733179, 15.241680), [new TargetPlace('Szczecin'), new TargetPlace('Poznań'), new TargetPlace('Wrocław')]),
+    new Place('Gorzów Wielkopolski', L.latLng(52.733179, 15.241680), [new TargetPlace('Szczecin'), new TargetPlace('Poznań'), new TargetPlace('Wrocław'),  new TargetPlace('Bydgoszcz')]),
     new Place('Lublin', L.latLng(51.234893, 22.570755), [new TargetPlace('Łódź'), new TargetPlace('Warszawa'), new TargetPlace('Białystok'), new TargetPlace('Rzeszów'), new TargetPlace('Kielce')]),
     new Place('Bydgoszcz', L.latLng(53.121995, 18.018519), [new TargetPlace('Warszawa'), new TargetPlace('Białystok'), new TargetPlace('Olsztyn'), new TargetPlace('Gdańsk'), new TargetPlace('Szczecin'), new TargetPlace('Poznań'), new TargetPlace('Łódź')]),
     new Place('Wrocław', L.latLng(51.107865, 17.029611), [new TargetPlace('Gorzów Wielkopolski'), new TargetPlace('Poznań'), new TargetPlace('Łódź'), new TargetPlace('Opole')]),
@@ -36,15 +36,9 @@ class Map extends React.Component {
     map;
 
     componentDidMount() {
-
-        //
-        // let roadsMarker = new RoadsMarker(places);
-        // roadsMarker.addRoadsToTargetPlaces();
-        // setTimeout(() => roadsMarker.downloadPlacesAsJSONFile(),60000);
-
         this.map = L.map("map", {
             center: [52.227932, 19.2],
-            zoom: 6,
+            zoom: 7,
             layers: [
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -53,14 +47,15 @@ class Map extends React.Component {
                 }),
             ],
         });
-
+        //let roadsMarker = new RoadsMarker(places, this.map);
+        //roadsMarker.addRoadsToTargetPlaces();
+        //setTimeout(() => roadsMarker.downloadPlacesAsJSONFile(),120000);
         L.layerGroup().addTo(this.map);
         let places = require('../json/places.json');
         let adjecancyMatrix = require('../json/adjecancyMatrix.json');
         let floydWarshall = new FloydWarshall(adjecancyMatrix);
-        let roadsMarker = new RoadsMarker(places, floydWarshall, this.map, this.props.handleRoadsMarker);
+        let roadsMarker = new RoadsMarker(places, this.map, floydWarshall, this.props.handleRoadsMarker);
         roadsMarker.start();
-
     }
 
     render() {
