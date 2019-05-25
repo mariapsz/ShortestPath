@@ -38,3 +38,23 @@ label {
     align-items: center;;
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 3vh;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #555;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #a9a4a4;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+

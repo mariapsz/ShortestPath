@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a5244526-69fa-48ec-a0dd-87dad3cfbc3d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/components/traceSummary.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/traceSummary.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/traceSummary.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/traceSummary.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -16,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/components/traceSummary.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="693">
-              <caret line="38" column="1" selection-start-line="38" selection-start-column="1" selection-end-line="38" selection-end-column="1" />
+            <state relative-caret-position="563">
+              <caret line="48" column="1" lean-forward="true" selection-start-line="48" selection-start-column="1" selection-end-line="48" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -34,7 +33,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/components/traceSummary.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="227">
@@ -136,12 +135,12 @@
         <option value="$PROJECT_DIR$/src/components/map.js" />
         <option value="$PROJECT_DIR$/src/classes/RoadsMarker.js" />
         <option value="$PROJECT_DIR$/src/classes/FloydWarshall.js" />
-        <option value="$PROJECT_DIR$/src/components/traceSummary.css" />
         <option value="$PROJECT_DIR$/src/components/traceSummary.js" />
+        <option value="$PROJECT_DIR$/src/components/traceSummary.css" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-1539" />
     <option name="y" value="-43" />
     <option name="width" value="1614" />
@@ -233,15 +232,15 @@
       <workItem from="1558592468659" duration="12555000" />
       <workItem from="1558710206851" duration="591000" />
       <workItem from="1558715350613" duration="14375000" />
-      <workItem from="1558772121470" duration="5401000" />
+      <workItem from="1558772121470" duration="5857000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="99156000" />
+    <option name="totallyTimeSpent" value="99612000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-193" width="1936" height="1056" extended-state="7" />
+    <frame x="-1928" y="-193" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13856691" />
@@ -460,13 +459,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/components/traceSummary.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="38" column="1" selection-start-line="38" selection-start-column="1" selection-end-line="38" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/components/traceSummary.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="227">
@@ -474,6 +466,13 @@
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/components/traceSummary.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="563">
+          <caret line="48" column="1" lean-forward="true" selection-start-line="48" selection-start-column="1" selection-end-line="48" selection-end-column="1" />
         </state>
       </provider>
     </entry>
