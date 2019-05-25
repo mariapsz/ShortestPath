@@ -237,7 +237,6 @@ class RoadsMarker {
                 } else {
                     adjacencyMatrix[i][targetPlaceIdx] = this.places[i].targetPlaces[j].road.distance;
                 }
-
             }
         }
         return adjacencyMatrix;
@@ -250,9 +249,19 @@ class RoadsMarker {
         let placesCount = placesIndexes.length;
         for (let i = 0; i < placesCount - 1; i++) {
             let nextPlaceName = this.places[placesIndexes[i + 1]].name;
-            let pointsList = this.places[placesIndexes[i]].targetPlaces.find((place) => {
+            let pointsList;
+            let place = this.places[placesIndexes[i]].targetPlaces.find((place) => {
                 return place.name === nextPlaceName
-            }).road.geoJSON.geometry.coordinates.map((row) => row.slice());
+            });
+            if (place !== undefined)
+                pointsList = place.road.geoJSON.geometry.coordinates.map((row) => row.slice());
+            else {
+                let currentPlaceName = this.places[placesIndexes[i]].name;
+                place = this.places[placesIndexes[i+1]].targetPlaces.find((place) => {
+                    return place.name === currentPlaceName;
+                });
+                pointsList = place.road.geoJSON.geometry.coordinates.map((row) => row.slice());
+            }
             RoadsMarker.reverseEachRowIn2DimArray(pointsList);
             let polyline = new L.Polyline(pointsList, {
                 color: color,

@@ -49,11 +49,12 @@ class FloydWarshall {
 
         let distMatrixLength = this.distanceMatrix.length;
         for (let k = 0; k < distMatrixLength; k++) {
+            let temp = this.distanceMatrix.map(row => row.slice());
             for (let i = 0; i < distMatrixLength; i++) {
                 for (let j = 0; j < distMatrixLength; j++) {
-                    if (this.distanceMatrix[i][j].weight > this.distanceMatrix[i][k].weight + this.distanceMatrix[k][j].weight) {
-                        this.distanceMatrix[i][j].weight = this.distanceMatrix[i][k].weight + this.distanceMatrix[k][j].weight;
-                        this.distanceMatrix[i][j].predecessor = k;
+                    if (temp[i][j].weight > temp[i][k].weight + temp[k][j].weight) {
+                        this.distanceMatrix[i][j].weight = temp[i][k].weight + temp[k][j].weight;
+                        this.distanceMatrix[i][j].predecessor = temp[k][j].predecessor;
                     }
                 }
             }

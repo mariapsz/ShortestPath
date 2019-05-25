@@ -25,9 +25,18 @@ class TraceSummary extends React.Component {
 
         for (let i = 0; i < tracePlacesLength - 1; i++) {
             let nextPlaceName = this.props.roadsMarker.places[tracePlacesIdx[i + 1]].name;
-            let distance = this.props.roadsMarker.places[tracePlacesIdx[i]].targetPlaces.find((place) => {
+            let nextPlace = this.props.roadsMarker.places[tracePlacesIdx[i]].targetPlaces.find((place) => {
                 return place.name === nextPlaceName
-            }).road.distance;
+            });
+            let distance;
+            if (nextPlace !== undefined)
+                distance = nextPlace.road.distance;
+            else {
+                let currentPlaceName = this.props.roadsMarker.places[tracePlacesIdx[i]].name;
+                distance = this.props.roadsMarker.places[tracePlacesIdx[i+1]].targetPlaces.find((place) => {
+                    return place.name === currentPlaceName
+                }).road.distance;
+            }
             if (i + 1 !== tracePlacesLength - 1)
                 results.push(<div>
                     <div className='distanceWrapper'>
