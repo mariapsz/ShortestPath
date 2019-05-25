@@ -19,7 +19,7 @@ class TraceSummary extends React.Component {
         let results = [];
         results.push(<div className='placeName endpoint'>{this.props.roadsMarker.startPointMarker.options.title}</div>);
         let places = this.props.roadsMarker.places;
-        let tracePlacesIdx = this.props.roadsMarker.currentTrace;
+        let tracePlacesIdx = this.props.roadsMarker.currentTrace.reverse();
         console.log('trace: ', tracePlacesIdx);
         let tracePlacesLength = tracePlacesIdx.length;
 
@@ -33,7 +33,7 @@ class TraceSummary extends React.Component {
                 distance = nextPlace.road.distance;
             else {
                 let currentPlaceName = this.props.roadsMarker.places[tracePlacesIdx[i]].name;
-                distance = this.props.roadsMarker.places[tracePlacesIdx[i+1]].targetPlaces.find((place) => {
+                distance = this.props.roadsMarker.places[tracePlacesIdx[i + 1]].targetPlaces.find((place) => {
                     return place.name === currentPlaceName
                 }).road.distance;
             }

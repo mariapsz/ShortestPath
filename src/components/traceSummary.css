@@ -2,6 +2,7 @@
     height: 40vh;
     padding: 4vh;
     color: darkgray;
+    overflow: auto;
 }
 
 label {
