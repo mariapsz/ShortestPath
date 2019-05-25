@@ -53,9 +53,12 @@ class Map extends React.Component {
         L.layerGroup().addTo(this.map);
         let places = require('../json/places.json');
         let adjecancyMatrix = require('../json/adjecancyMatrix.json');
-        let floydWarshall = new FloydWarshall(adjecancyMatrix);
+        let distanceMatrix = require('../json/distanceMatrix.json');
+        let floydWarshall = new FloydWarshall(adjecancyMatrix, distanceMatrix);
         let roadsMarker = new RoadsMarker(places, this.map, floydWarshall, this.props.handleRoadsMarker);
         roadsMarker.start();
+        //setTimeout(() =>
+        //floydWarshall.downloadDistanceMatrixAsJSONFile(), 10000);
     }
 
     render() {

@@ -17,6 +17,10 @@ label {
     display: flex;
 }
 
+.totalDistance {
+    min-height: 8vh;
+    align-items: center;
+}
 
 .placeName {
     height: 4vh;

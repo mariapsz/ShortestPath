@@ -27,16 +27,6 @@ class RoadsMarker {
     }
 
     addRoadsToTargetPlaces = () => {
-        //let map = L.map("map", {
-        //    center: [52.227932, 21.012843],
-        //    zoom: 6,
-        //    layers: [
-        //        L.tileLayer("https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png", {
-        //            attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        //        }),
-        //    ],
-        //});
-
         this.places.forEach((place) => {
             place.targetPlaces.forEach((targetPlace) => {
                 let connectionIdx = this.getPlaceIdx(targetPlace);

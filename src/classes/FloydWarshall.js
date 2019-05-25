@@ -12,7 +12,7 @@ class FloydWarshall {
     adjacencyMatrix;
     distanceMatrix;
 
-    constructor(adjacencyMatrix) {
+    constructor(adjacencyMatrix, distanceMatrix) {
         this.adjacencyMatrix = adjacencyMatrix;
         //fixed lost Infinity values in adjacencyMatrix during serialization
         //exchange null with Infinity
@@ -23,7 +23,9 @@ class FloydWarshall {
                     this.adjacencyMatrix[i][j] = Infinity;
             }
         }
-        this.setDistanceMatrix();
+        if (distanceMatrix === undefined)
+            this.setDistanceMatrix();
+        else this.distanceMatrix = distanceMatrix;
     }
 
     initializeDistanceMatrix() {
@@ -59,8 +61,8 @@ class FloydWarshall {
                 }
             }
         }
-        console.log('dist',  this.distanceMatrix);
-        console.table( this.adjacencyMatrix);
+        console.log('dist', this.distanceMatrix);
+        console.table(this.adjacencyMatrix);
     }
 
     getShortestPath(startPointIdx, targetPointIdx) {
@@ -75,6 +77,19 @@ class FloydWarshall {
         console.log('Path ', path);
         return path;
     }
+
+    downloadDistanceMatrixAsJSONFile = () => {
+        function download(content, fileName, contentType) {
+            let a = document.createElement("a");
+            let file = new Blob([content], {type: contentType});
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        download(JSON.stringify(this.distanceMatrix), 'distanceMatrix.json', 'text/plain');
+    };
+
 }
 
 export default FloydWarshall;
