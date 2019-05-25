@@ -42,7 +42,6 @@ class Map extends React.Component {
             layers: [
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
                     maxZoom: 19
                 }),
             ],
@@ -50,15 +49,12 @@ class Map extends React.Component {
         //let roadsMarker = new RoadsMarker(places, this.map);
         //roadsMarker.addRoadsToTargetPlaces();
         //setTimeout(() => roadsMarker.downloadPlacesAsJSONFile(),120000);
-        L.layerGroup().addTo(this.map);
         let places = require('../json/places.json');
         let adjecancyMatrix = require('../json/adjecancyMatrix.json');
         let distanceMatrix = require('../json/distanceMatrix.json');
         let floydWarshall = new FloydWarshall(adjecancyMatrix, distanceMatrix);
         let roadsMarker = new RoadsMarker(places, this.map, floydWarshall, this.props.handleRoadsMarker);
         roadsMarker.start();
-        //setTimeout(() =>
-        //floydWarshall.downloadDistanceMatrixAsJSONFile(), 10000);
     }
 
     render() {

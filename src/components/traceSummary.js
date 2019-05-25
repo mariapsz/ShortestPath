@@ -42,14 +42,14 @@ class TraceSummary extends React.Component {
                 results.push(<div>
                     <div className='distanceWrapper'>
                         <div className='arrow'>&#8595;</div>
-                        <div className='distance'>{distance} km</div>
+                        <div className='distance'>{distance.toFixed(3)} km</div>
                     </div>
                     <div className='placeName'>{nextPlaceName}</div>
                 </div>);
             else results.push(<div>
                 <div className='distanceWrapper'>
                     <div className='arrow'>&#8595;</div>
-                    <div className='distance'>{distance} km</div>
+                    <div className='distance'>{distance.toFixed(3)} km</div>
                 </div>
                 <div className='placeName endpoint'>{nextPlaceName}</div>
             </div>);
@@ -57,7 +57,7 @@ class TraceSummary extends React.Component {
 
         results.push(<div className='distanceWrapper totalDistance'>
             <label>Całkowity dystans: </label>
-            <div className='placeName endpoint'>{totalDistance} km</div>
+            <div className='placeName endpoint'>{totalDistance.toFixed(3)} km</div>
         </div>);
         return results;
     }
